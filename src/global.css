@@ -1,0 +1,132 @@
+@layer base, shared, components;
+
+@import './tokens.css';
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  html {
+    color: var(--ink);
+    background: var(--paper);
+    font-family: var(--font);
+    font-synthesis: none;
+  }
+  body {
+    margin: 0;
+    min-width: 320px;
+    font-size: 15px;
+    line-height: 1.75;
+  }
+  button, input, select, textarea {
+    font: inherit;
+  }
+  button, a, input, summary {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button {
+    cursor: pointer;
+  }
+  a {
+    color: var(--accent);
+    text-underline-offset: 4px;
+  }
+  button, input, select, textarea, a, summary {
+    touch-action: manipulation;
+  }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  h1, h2, h3, p {
+    margin: 0;
+  }
+  h1, h2, h3 {
+    line-height: 1.5;
+    text-wrap: pretty;
+    overflow-wrap: anywhere;
+  }
+  h1 {
+    font-size: clamp(26px, 3.2vw, 40px);
+    letter-spacing: .025em;
+  }
+  h2 {
+    font-size: 22px;
+  }
+  h3 {
+    font-size: 17px;
+  }
+  p + p {
+    margin-top: var(--space-3);
+  }
+  small {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  strong, b {
+    font-weight: 700;
+  }
+  img, svg {
+    max-width: 100%;
+  }
+  ul, ol {
+    padding-left: 22px;
+  }
+  li + li {
+    margin-top: var(--space-2);
+  }
+  [hidden] {
+    display: none !important;
+  }
+  details {
+    margin-top: var(--space-4);
+  }
+  summary {
+    cursor: pointer;
+    min-height: 44px;
+    padding-block: 10px;
+    color: var(--accent);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  details[open] > summary {
+    margin-bottom: var(--space-2);
+  }
+  details > p, details > ul {
+    font-size: 13px;
+  }
+  details > a {
+    display: inline-block;
+    margin-block: var(--space-2);
+    font-size: 13px;
+  }
+  input, select, textarea {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid #adb9a8;
+    border-radius: var(--radius);
+    color: var(--ink);
+    background: var(--surface);
+  }
+  input[type='checkbox'], input[type='radio'] {
+    width: auto;
+    min-height: auto;
+    accent-color: var(--accent);
+  }
+  @media (max-width: 700px) {
+    body {
+      font-size: 14px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      transition: none !important;
+      animation: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

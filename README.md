@@ -31,10 +31,12 @@ React + Vite + TanStack Routerの静的SPAです。Routerはゲーム・全日�
 | パス | 内容 |
 | --- | --- |
 | `src/main.jsx` / `src/App.jsx` | TanStack RouterとReactの画面構成 |
+| `src/pages/` | ゲーム・全日誌・遊び方の遅延読み込み対象 |
 | `src/game/GameProvider.jsx` | 保存・進行・見守り方のReact状態 |
 | `src/game/session.js` | 現行セーブの読み込みと選択結果 |
 | `src/components/` | 相談、会社、人物、日誌、出典と共通UI |
-| `src/tokens.css` / `src/styles.css` | 紙色・深緑のデザイントークンとレイアウト |
+| `src/tokens.css` / `src/global.css` | デザイントークンと全体の基本スタイル |
+| `src/App.module.css` / `src/components/*.module.css` | 画面・部品単位のCSS Modules |
 | `src/domain/` | 会計、決定的乱数、人物・契約・事件・世代交代、出典 |
 | `public/assets/` | 専用生成した事務所画像 |
 | `tests/` | 既存モデル検算と最小限のReact操作確認 |
@@ -44,11 +46,23 @@ React + Vite + TanStack Routerの静的SPAです。Routerはゲーム・全日�
 
 旧版のDOM文字列UI・legacy配信物・未使用の旧集計データは削除しました。旧版ソースはGit履歴に残っています。モデルの計算・確率・乱数は今回のUI移行で変更していません。
 
+### スタイル
+
+Vite標準のCSS Modulesでクラス名をファイル単位にスコープ化しています。アプリとゲーム画面のレイアウトは `App.module.css`、部品固有のスタイルとメディアクエリは対応する `*.module.css` に置きます。共通のボタン・補助文・セクション等は `components/shared.module.css` をJSXからimportして使い、同じ定義を複製しません。親側のレイアウト調整には親のローカルクラスを追加し、子部品には必要に応じてclassNameで渡します。CSS間の `@value` 参照は使いません。
+
+全体の基本設定は `global.css`、色・余白などの変数は `tokens.css` に残します。カスケードレイヤーは `base` → `shared` → `components` の順に優先します。`main.jsx` ではレイヤーの順序を定義する `global.css` を最初にimportしてください。動的な進捗・グラフ幅はJSXのstyleで渡します。
+
+### コード分割
+
+画面はTanStack Routerの `lazyRouteComponent`、会社メニューはReactの `lazy` で必要時に読み込みます。共通部品のチャンク化はViteに任せ、サイズ警告の閾値は変更しません。画面の読み込み中と会社メニュー表示中はシミュレーションを停止します。
+
+メニューの読み込み失敗はError Boundaryで隔離して共通通知へ送り、保存を変えず会社へ戻れます。画面の読み込み失敗はRouterのエラー画面に表示します。通信状態を確認したうえで、利用者が再読み込みできます。自動再試行はしません。
+
 ### 検証
 
 `npm test`はNode標準テストランナーで既存の会計・再現性・世代交代等を検算し、React操作はTesting Library + jsdomで8ケースを確認します。再開ボタンからのTab移動による停止と、保存一覧の読み取りエラーの隔離も含みます。通知の優先順位と保存失敗時の状態維持も検証します。タイマーは既存のPlaybackテストを再利用しています。
 
-今回の環境ではChromiumの起動がOSサンドボックスでブロックされ、実ブラウザのPC/スマートフォン描画確認は未実施です。公開前にダイアログのスクロール・フッター、キーボード操作、スマートフォン幅を実機で確認してください。
+CSS Modules移行時はChromiumで1280px・390px幅の開始画面、出会い、相談、日誌、会社メニュー、全日誌、遊び方を移行前と比較しています。ダイアログの表示範囲と横方向のはみ出しも確認しています。jsdom操作テストでは `tests/helpers/register-css.mjs` がクラス参照を提供し、CSSの描画は検証しません。実機のタッチ操作と他ブラウザでの描画は未確認です。
 
 追加の統計モデル検算は `node scripts/validate-generations.mjs` などで実行できます。出力先は `validation/` で、アプリの設定やビルド成果物を変更しません。
 

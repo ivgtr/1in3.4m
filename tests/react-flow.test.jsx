@@ -1,3 +1,4 @@
+import './helpers/register-css.mjs';
 import test, { afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import React from 'react';
@@ -109,8 +110,8 @@ test('自動相談への介入で即座に再開表示となり、重大な選�
   mount(fresh(), 'safe');
   fireEvent.click(screen.getByRole('button', { name: '時計を再生' }));
   assert.equal(game.clock.running, true);
-  const body = document.querySelector('.dialog-body');
-  fireEvent.pointerDown(body);
+  const choices = screen.getByRole('group', { name: '対応を選ぶ' });
+  fireEvent.pointerDown(choices);
   assert.equal(game.clock.running, false);
   const resume = screen.getByRole('button', { name: '再開' });
   fireEvent.click(resume);

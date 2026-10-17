@@ -1,0 +1,183 @@
+@layer shared {
+  .button {
+    min-height: 44px;
+    padding: 9px 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink);
+    background: var(--surface);
+    line-height: 1.55;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .button:hover:not(:disabled) {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+  .button:disabled {
+    color: var(--muted);
+    background: var(--surface-muted);
+    opacity: .58;
+  }
+  .primary, .button.primary {
+    color: var(--surface);
+    background: var(--accent);
+    border-color: var(--accent);
+    font-weight: 700;
+  }
+  .primary:hover:not(:disabled), .button.primary:hover:not(:disabled) {
+    color: var(--surface);
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+  }
+  .ghost, .button.ghost {
+    background: transparent;
+    border-color: transparent;
+  }
+  .text, .text-button {
+    padding-inline: 0;
+    background: transparent;
+    border-color: transparent;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .danger, .button.danger {
+    color: var(--danger);
+  }
+  .button-row, .modal-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .button-row {
+    margin-top: var(--space-6);
+  }
+  .button-row button[aria-pressed='true'] {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  .page {
+    width: min(1200px, 100%);
+    margin: auto;
+    padding: var(--space-8) var(--space-8) var(--space-12);
+  }
+  .page > section + section {
+    margin-top: var(--space-8);
+  }
+  .eyebrow {
+    margin: 0 0 var(--space-2);
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: .08em;
+    color: var(--muted);
+  }
+  .note {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .notice {
+    border: 1px solid #d8c4a5;
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    background: var(--warm-soft);
+    font-size: 14px;
+  }
+  .warning {
+    color: var(--warm);
+  }
+  .status-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+    margin-bottom: var(--space-4);
+  }
+  .status-line h1 {
+    font-size: clamp(23px, 2.5vw, 30px);
+  }
+  .status-line strong {
+    font-size: 23px;
+    font-variant-numeric: tabular-nums;
+  }
+  .status-line small, .status-line > span {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .source-tag {
+    display: inline-block;
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .05em;
+  }
+  .detail-section + .detail-section {
+    margin-top: var(--space-6);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--line);
+  }
+  .detail-section > h3 {
+    margin-bottom: var(--space-3);
+  }
+  .detail-section > p + p {
+    margin-top: var(--space-2);
+  }
+  .relationship-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    padding: var(--space-4);
+  }
+  .relationship-card p {
+    font-size: 13px;
+    margin-top: var(--space-2);
+  }
+  .relationship-card > span {
+    float: right;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .relationship-card button {
+    margin-top: var(--space-3);
+  }
+  h3 + .choice-list {
+    margin-top: var(--space-3);
+  }
+  .choice-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .page {
+      padding-inline: var(--space-6);
+    }
+    .choice-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 700px) {
+    .page {
+      padding: var(--space-6) var(--space-4) var(--space-8);
+    }
+    .status-line {
+      gap: var(--space-1);
+    }
+    .status-line h1, .status-line strong {
+      font-size: 23px;
+    }
+    .choice-list {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media print {
+    .modal-actions {
+      display: none;
+    }
+    .page {
+      padding: 0;
+    }
+  }
+}

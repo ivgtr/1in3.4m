@@ -1,3 +1,5 @@
+import styles from './Evidence.module.css';
+import shared from './shared.module.css';
 import React from 'react';
 import { EVIDENCE, ASSUMPTIONS, GENERATION_ASSUMPTIONS, SUCCESSION_EVIDENCE, monthlyHazard } from '../domain/evidence.js';
 import { REAL_START, REAL_MOMENTS, teamBucket } from '../domain/insights.js';
@@ -15,10 +17,10 @@ function SourceDetails({ source }) {
 
 function Bars({ labels, values, selected = -1 }) {
   const max = Math.max(...values, 1);
-  return <div className="distribution">
-    {labels.map((label, index) => <div className={`bar-row${index === selected ? ' mine' : ''}`} key={label}>
+  return <div className={styles['distribution']}>
+    {labels.map((label, index) => <div className={`${styles['bar-row']} ${index === selected ? styles['mine'] : ''}`} key={label}>
       <span>{label}{index === selected && <small> ← 今回の会社</small>}</span>
-      <div className="bar-track" aria-hidden="true"><i style={{ width: `${values[index] / max * 100}%` }} /></div>
+      <div className={styles['bar-track']} aria-hidden="true"><i style={{ width: `${values[index] / max * 100}%` }} /></div>
       <strong>{values[index]}%</strong>
     </div>)}
   </div>;
@@ -26,8 +28,8 @@ function Bars({ labels, values, selected = -1 }) {
 
 function EvidenceCard({ kind, title, children }) {
   const source = EVIDENCE[kind];
-  return <section className="evidence-card">
-    <span className="source-tag">{source.kind}</span>
+  return <section className={styles['evidence-card']}>
+    <span className={shared['source-tag']}>{source.kind}</span>
     <h3>{title}</h3>
     {children}
     <SourceDetails source={source} />
@@ -37,12 +39,12 @@ function EvidenceCard({ kind, title, children }) {
 export function StartInsight({ state }) {
   const count = state.initial.staff + 1;
   const bucket = teamBucket(count);
-  return <section className="evidence-card">
-    <span className="source-tag">実調査 · {REAL_START.year}年度</span>
+  return <section className={styles['evidence-card']}>
+    <span className={shared['source-tag']}>実調査 · {REAL_START.year}年度</span>
     <h3>この会社は、{count}人から。</h3>
     <p>公庫融資先の新規開業企業では、{REAL_START.labels[bucket]}での開業が{REAL_START.values[bucket]}%。経営者本人を含む人数です。</p>
     <Bars labels={REAL_START.labels} values={REAL_START.values} selected={bucket} />
-    <p className="note">人数の回答 {num(REAL_START.n)}社。全企業や受託開発業の分布ではありません。</p>
+    <p className={`${shared['note']} ${styles['note']}`}>人数の回答 {num(REAL_START.n)}社。全企業や受託開発業の分布ではありません。</p>
     <details>
       <summary>出典・対象・比較できること</summary>
       <p>{REAL_START.population}</p>
@@ -55,8 +57,8 @@ export function StartInsight({ state }) {
 
 function Moment({ kind }) {
   const data = REAL_MOMENTS[kind];
-  return <section className="evidence-card">
-    <span className="source-tag">実調査 · 2025年度</span>
+  return <section className={styles['evidence-card']}>
+    <span className={shared['source-tag']}>実調査 · 2025年度</span>
     <h3>{data.title}</h3>
     <Bars labels={data.labels} values={data.values} />
     <p>{data.finding}</p>
@@ -73,8 +75,8 @@ function Moment({ kind }) {
 
 function SuccessionEvidence() {
   const profit = SUCCESSION_EVIDENCE.profit;
-  return <section className="evidence-card">
-    <span className="source-tag">実測・参考のみ · 承継の抽選には使用しない</span>
+  return <section className={styles['evidence-card']}>
+    <span className={shared['source-tag']}>実測・参考のみ · 承継の抽選には使用しない</span>
     <h3>交代した会社にも、違う経過がある。</h3>
     <Bars labels={profit.labels} values={profit.values} />
     <p>当期利益を承継時と比べた回答です。経過期間は一定ではなく、売上の増加率や毎年の成長確率ではありません。</p>
@@ -82,7 +84,7 @@ function SuccessionEvidence() {
       <h4>{source.source}</h4>
       <SourceDetails source={source} />
     </div>)}
-    <p className="note">ゲームは四半期決算の税等を省略した利益を記録します。実調査の当期利益や自己評価とは同一ではなく、率を合わせる調整は行いません。</p>
+    <p className={`${shared['note']} ${styles['note']}`}>ゲームは四半期決算の税等を省略した利益を記録します。実調査の当期利益や自己評価とは同一ではなく、率を合わせる調整は行いません。</p>
   </section>;
 }
 
@@ -115,21 +117,21 @@ export function Discovery({ kind, state }) {
   } else {
     return null;
   }
-  return <aside className="discovery">
-    <span className="source-tag">実調査 · この出来事から</span>
+  return <aside className={styles['discovery']}>
+    <span className={shared['source-tag']}>実調査 · この出来事から</span>
     <p>{line}</p>
     <details>
       <summary>対象・調査年・出典を読む</summary>
       {detail}
-      <p className="note">自社の成功確率や順位を示す数字ではありません。</p>
+      <p className={`${shared['note']} ${styles['note']}`}>自社の成功確率や順位を示す数字ではありません。</p>
     </details>
   </aside>;
 }
 
 export function EvidenceGuide() {
-  return <div className="evidence-guide">
-    <p className="notice">架空の小さな開発会社のシミュレーションです。実測は調査対象の観測値、推計は別の期間・条件への変換、仮定は未測定のゲーム設計を表します。</p>
-    <section className="detail-section">
+  return <div>
+    <p className={shared['notice']}>架空の小さな開発会社のシミュレーションです。実測は調査対象の観測値、推計は別の期間・条件への変換、仮定は未測定のゲーム設計を表します。</p>
+    <section className={shared['detail-section']}>
       <h3>見守り、ときどき決める</h3>
       <p>1期は3か月。月ごとに採用・交渉などの結果が届き、四半期に納品・入金・会計を集計します。相談を選ぶだけでは年月は進みません。</p>
       <p>「自分で決める」「重要判断は確認」「すべておまかせ」から選べます。おまかせは実行可能な選択肢から均等に抽選し、最適解を探しません。重要判断を確認する設定では資金調達・資金危機・廃業・売却・合併の相談で停止します。「すべて」は会社の終了も選び得ます。</p>
@@ -146,7 +148,7 @@ export function EvidenceGuide() {
       <p>紹介で迎えると決めた候補者は3か月後の入社予定です。通常募集を紹介に切り替える場合は同じ計画の1枠を使い、通常募集の予定を取り消します。紹介への切替・追加採用は通常募集と別集計です。</p>
     </EvidenceCard>
     <EvidenceCard kind="departures" title="年間退職者0人：45.4%"><p>参考表示のみです。個人の離職率へ換算しません。ゲームの離職・入金遅延・受注の確率は仮定です。</p></EvidenceCard>
-    <section className="detail-section">
+    <section className={shared['detail-section']}>
       <h3>対応が変えるもの</h3>
       <ul>
         <li>隔離バックアップ：復元方法と停止期間。発生率は変えません。導入{money(ASSUMPTIONS.backupCost)}、毎月{money(ASSUMPTIONS.backupMonthly)}。</li>
@@ -160,14 +162,14 @@ export function EvidenceGuide() {
     <SuccessionEvidence />
     <EvidenceCard kind="closure" title="休廃業・解散企業の49.1%は直近黒字"><p>休廃業した企業の内訳です。「黒字企業が廃業する確率」として使いません。ゲームでは資金不足から再建・清算へ進み、独立した倒産抽選は行いません。</p></EvidenceCard>
     <EvidenceCard kind="survival" title="参考集団の4年間：存続89.7%、廃業8.9%"><p>追跡不能1.4%。開業直後からの5年生存率ではありません。対象・時代・観測開始が異なるため、会社の寿命や成功順位に換算しません。</p></EvidenceCard>
-    <details className="detail-section">
+    <details className={shared['detail-section']}>
       <summary>創業時・開業後の参考調査</summary>
       <p>{REAL_START.publisher}「{REAL_START.title}」 · {REAL_START.observed}</p>
       <p>{REAL_START.population}</p>
       <p>創業時の人数は{num(REAL_START.n)}社の回答を参考表示します。資金や成功確率の比較には使いません。人材確保・育成・売上傾向は関連する経験の参考です。</p>
       <a href={REAL_START.url} target="_blank" rel="noreferrer">公庫の原資料を読む ↗</a>
     </details>
-    <details className="detail-section">
+    <details className={shared['detail-section']}>
       <summary>会計・保存の仕様</summary>
       <p>納品を売上、給与・固定費・施策・外注・利息を費用に計上します。通常は売上の55%を当期、残りを次期に回収。借入元本は利益に含めません。</p>
       <p>通常の支払いは四半期、備え・復旧などは月次。前受金は納品時に充当し、保険補填は翌月に入金します。税・減価償却・貸倒などは省略しています。</p>

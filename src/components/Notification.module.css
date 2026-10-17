@@ -1,0 +1,9 @@
+@layer components {
+  .game-notification {
+    margin-bottom: var(--space-4);
+    overflow-wrap: anywhere;
+  }
+  .game-notification > button {
+    margin-top: var(--space-2);
+  }
+}

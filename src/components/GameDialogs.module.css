@@ -1,0 +1,28 @@
+@layer components {
+  .archive-list {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .archive-list > article {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    padding: var(--space-4);
+  }
+  .archive-list > article p {
+    font-size: 13px;
+    margin-top: var(--space-2);
+  }
+  .archive-list button {
+    margin-top: var(--space-3);
+  }
+  .field {
+    display: grid;
+    gap: var(--space-2);
+    margin: var(--space-4) 0;
+  }
+  .field > span, .field > label {
+    font-size: 13px;
+    font-weight: 700;
+  }
+}
