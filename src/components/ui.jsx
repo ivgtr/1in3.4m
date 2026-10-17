@@ -32,7 +32,8 @@ export function Dialog({ open = true, title, subtitle, children, footer, onClose
   }
 
   function handleKeyDown(event) {
-    if (['Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', ' '].includes(event.key)) interact(event);
+    if (event.key === 'Tab') onInteract?.();
+    else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', ' '].includes(event.key)) interact(event);
   }
 
   return (

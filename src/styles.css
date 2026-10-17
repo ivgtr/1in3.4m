@@ -51,6 +51,9 @@ button:disabled { color: var(--muted); background: var(--surface-muted); opacity
 .note { color: var(--muted); font-size: 13px; }
 .notice { border: 1px solid #d8c4a5; border-radius: var(--radius); padding: var(--space-4); background: var(--warm-soft); font-size: 14px; }
 .warning { color: var(--warm); }
+.page-notification { width: min(1136px, calc(100% - 32px)); margin: var(--space-4) auto; }
+.game-notification { margin-bottom: var(--space-4); overflow-wrap: anywhere; }
+.game-notification > .button { margin-top: var(--space-2); }
 .error { color: var(--danger); }
 p.error { padding: var(--space-3); border: 1px solid #e1b6a9; border-radius: var(--radius); }
 

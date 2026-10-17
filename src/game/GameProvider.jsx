@@ -25,10 +25,10 @@ export function GameProvider({ children }) {
   const [initial] = useState(readSession);
   const [state, setState] = useState(initial.state);
   const [preferences, setPreferences] = useState(initial.preferences);
-  const [error, setError] = useState(initial.error);
+  const [notification, setNotification] = useState(null);
+  const error = notification?.kind === 'error';
   const [draft, setDraft] = useState(null);
   const [dialogs, setDialogs] = useState([]);
-  const [notice, setNotice] = useState('');
   const [reading, setReading] = useState(false);
   const [routePaused, setRoutePaused] = useState(false);
   const [, refreshClock] = useState(0);
@@ -55,9 +55,17 @@ export function GameProvider({ children }) {
     clock.block('route', routePaused);
   }
 
+  function notify(kind, message) {
+    if (kind === 'error') clock.pause();
+    setNotification(current => {
+      if (current?.kind === 'error' && kind !== 'error') return current;
+      if (current?.kind === kind && current.message === message) return current;
+      return { kind, message };
+    });
+  }
+
   function fail(problem) {
-    clock.pause();
-    setError(problem.message);
+    notify('error', `進行を止めました。${problem.message}`);
   }
 
   function commit(next, nextNotice = '') {
@@ -65,7 +73,7 @@ export function GameProvider({ children }) {
     const before = stateRef.current;
     stateRef.current = next;
     setState(next);
-    setNotice(nextNotice);
+    if (nextNotice) notify('info', nextNotice);
     sync(next);
     if (before?.pending?.id !== next.pending?.id || before?.decisionReceipt !== next.decisionReceipt) clock.restart();
   }
@@ -162,7 +170,11 @@ export function GameProvider({ children }) {
     open: (kind, extra = {}) => { clock.block('modal', true); setDialogs(old => [...old, { kind, ...extra }]); },
     dismiss: () => setDialogs(old => old.slice(0, -1)),
     closeDialogs,
-    clearError: () => setError(null),
+    notify,
+    dismissNotification: () => {
+      if (error) clock.pause();
+      setNotification(null);
+    },
     encounter: () => run(() => setDraft(createEncounter(randomSeed(), null, config))),
     begin: () => run(() => {
       const next = prepareTimeline(evolveCompany(startLife(draft)));
@@ -205,7 +217,7 @@ export function GameProvider({ children }) {
       setState(null);
       setReading(false);
       setDraft(createEncounter(randomSeed(), null, config));
-      setNotice('');
+      setNotification(null);
       closeDialogs();
       sync(null);
     }),
@@ -222,7 +234,7 @@ export function GameProvider({ children }) {
     }),
   };
 
-  return <GameContext.Provider value={{ state, draft, preferences, initialError: initial.error, error, notice, reading, dialogs, actions, clock, autoReady: state && preferences ? autoReady(state, preferences.auto) : false }}>{children}</GameContext.Provider>;
+  return <GameContext.Provider value={{ state, draft, preferences, initialError: initial.error, notification, reading, dialogs, actions, clock, autoReady: state && preferences ? autoReady(state, preferences.auto) : false }}>{children}</GameContext.Provider>;
 }
 
 export function useGame() {

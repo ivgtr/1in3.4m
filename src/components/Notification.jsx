@@ -1,0 +1,12 @@
+import React from 'react';
+import { useGame } from '../game/GameProvider.jsx';
+import { Button } from './ui.jsx';
+
+export function Notification() {
+  const { notification, actions } = useGame();
+  if (!notification) return null;
+  return <div className="notice game-notification">
+    <p role={notification.kind === 'error' ? 'alert' : 'status'}>{notification.message}</p>
+    <Button onClick={actions.dismissNotification} aria-label="通知を閉じる">閉じる</Button>
+  </div>;
+}

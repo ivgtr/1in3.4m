@@ -5,6 +5,7 @@ import { isLightChoice } from '../domain/interaction.js';
 import { useGame } from '../game/GameProvider.jsx';
 import { dateAt, displayText, money } from '../game/format.js';
 import { Button, ChoiceCard, Dialog } from './ui.jsx';
+import { Notification } from './Notification.jsx';
 import { Discovery } from './Evidence.jsx';
 
 export function Progress({ clock, label }) {
@@ -69,6 +70,7 @@ export function DecisionFlow() {
     {!receipt && <Button onClick={actions.hold}>いったん畳んで会社を見る</Button>}
     {canAuto && <Button data-keep-playing onClick={actions.toggle}>{paused ? '再開' : '一時停止'}</Button>}
   </>} footer={<div className="decision-footer"><div className="decision-status"><p role="status">{status}</p>{canAuto && <Progress clock={clock} label={receipt ? '結果の表示時間' : '自動判断までの経過'} />}</div>{receipt ? <Button variant="primary" onClick={actions.finishResult}>{state.ended || state.suspended ? '結果を確認する' : state.pending ? '次の相談へ' : '続ける'}</Button> : <Button variant="primary" disabled={!chosen} onClick={() => actions.decide(selected)}>{chosen ? `${chosen.title} · 確定` : '対応を選んでください'}</Button>}</div>}>
+    {game.dialogs.length === 0 && (!!receipt || !state.decisionHeld) && <Notification />}
     {receipt ? <Receipt state={state} /> : <>
       <p>{displayText(decision.text.length > 140 ? decision.text.split('。')[0] + '。' : decision.text)}</p>
       <DecisionContext state={state} decision={decision} />

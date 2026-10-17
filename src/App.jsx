@@ -5,6 +5,7 @@ import { progressState } from './domain/view-state.js';
 import { useGame } from './game/GameProvider.jsx';
 import { AUTO_LABELS } from './game/session.js';
 import { dateAt } from './game/format.js';
+import { Notification } from './components/Notification.jsx';
 import { Button, SpeedControls } from './components/ui.jsx';
 import { CompanyStatus, Diary, Result } from './components/CompanyViews.jsx';
 import { EvidenceGuide, StartInsight } from './components/Evidence.jsx';
@@ -19,13 +20,13 @@ function PlaybackControls() {
 }
 
 export function AppLayout() {
-  const { state, initialError, actions } = useGame();
+  const { state, initialError, actions, dialogs, notification } = useGame();
   const pathname = useRouterState({ select: router => router.location.pathname });
   const navigate = useNavigate();
   useEffect(() => { actions.setRoutePaused(pathname !== '/'); }, [pathname]);
   if (initialError) return <main className="page"><p className="eyebrow">記録の読み込み</p><h1>会社を開けませんでした。</h1><p role="alert">{initialError}</p><Button onClick={() => location.reload()}>再読み込み</Button></main>;
   const leader = state && currentLeader(state);
-  return <div className="app-shell"><header className="topbar"><div className="top-row"><Link className="brand" to="/">{state ? state.name : '340万分の1'} <span className="version">0.10.0</span></Link><nav className="button-row" aria-label="会社のメニュー">{state ? <Button onClick={() => actions.open('company')}>会社のこと</Button> : <Link to="/about">遊び方</Link>}</nav></div>{state && <><div className="present-heading"><div><span className="eyebrow">創業から</span><strong className="company-age">{Math.floor(state.calendarMonth / 12)}<small>年</small>{state.calendarMonth % 12}<small>か月</small></strong></div><p className="current-president">第{leader.number}代社長 <b>{leader.name}</b><small>{dateAt(state.calendarMonth)}</small></p></div>{pathname === '/' && !state.ended && !state.suspended && !state.checkpoint && <PlaybackControls />}</>}</header><Outlet /><footer className="footer">架空の会社のシミュレーション。実調査とモデル上の仮定を組み合わせています。<Link to="/about">データと遊び方</Link></footer>{pathname === '/' && <DecisionFlow />}<GameDialogs onNavigate={path => navigate({ to: path })} /></div>;
+  return <div className="app-shell"><header className="topbar"><div className="top-row"><Link className="brand" to="/">{state ? state.name : '340万分の1'} <span className="version">0.10.0</span></Link><nav className="button-row" aria-label="会社のメニュー">{state ? <Button onClick={() => actions.open('company')}>会社のこと</Button> : <Link to="/about">遊び方</Link>}</nav></div>{state && <><div className="present-heading"><div><span className="eyebrow">創業から</span><strong className="company-age">{Math.floor(state.calendarMonth / 12)}<small>年</small>{state.calendarMonth % 12}<small>か月</small></strong></div><p className="current-president">第{leader.number}代社長 <b>{leader.name}</b><small>{dateAt(state.calendarMonth)}</small></p></div>{pathname === '/' && !state.ended && !state.suspended && !state.checkpoint && <PlaybackControls />}</>}</header>{notification && dialogs.length === 0 && !(pathname === '/' && (state?.decisionReceipt || (state?.pending && !state.decisionHeld))) && <div className="page-notification"><Notification /></div>}<Outlet /><footer className="footer">架空の会社のシミュレーション。実調査とモデル上の仮定を組み合わせています。<Link to="/about">データと遊び方</Link></footer>{pathname === '/' && <DecisionFlow />}<GameDialogs onNavigate={path => navigate({ to: path })} /></div>;
 }
 
 function Welcome() {
@@ -35,12 +36,12 @@ function Welcome() {
 }
 
 export function GamePage() {
-  const { state, actions, notice, reading } = useGame();
+  const { state, actions, reading } = useGame();
   const feedRef = useRef(null);
   useEffect(() => { if (!reading && feedRef.current) feedRef.current.scrollTop = 0; }, [reading, state?.calendarMonth]);
   if (!state) return <Welcome />;
   if ((state.ended || state.suspended || state.checkpoint) && !state.decisionReceipt && !state.pending) return <main className="page result-page"><Result state={state} onContinue={actions.continue} onNew={() => actions.open('new')} onExport={() => exportCompany(state)} onEvent={id => actions.open('event', { id })} /></main>;
-  return <main className="page"><div className="journal-layout"><section className="journal-main">{notice && <p className="notice" role="status">{notice}</p>}{state.decisionHeld && <p className="notice">相談を保留しています。会社を確かめたら <Button onClick={actions.reopen}>相談に戻る</Button></p>}{reading && <div className="notice"><span>過去の記録を読んでいるため、一時停止しています。</span><Button onClick={actions.latest}>最新へ戻る</Button><Button onClick={actions.play}>最新から再開</Button></div>}<Diary state={state} onReading={actions.markReading} onEvent={id => actions.open('event', { id })} feedRef={feedRef} /><Link to="/history">すべての記録を読む</Link></section><CompanyStatus state={state} onOpen={kind => actions.open(kind)} onHelp={actions.help} /></div></main>;
+  return <main className="page"><div className="journal-layout"><section className="journal-main">{state.decisionHeld && <p className="notice">相談を保留しています。会社を確かめたら <Button onClick={actions.reopen}>相談に戻る</Button></p>}{reading && <div className="notice"><span>過去の記録を読んでいるため、一時停止しています。</span><Button onClick={actions.latest}>最新へ戻る</Button><Button onClick={actions.play}>最新から再開</Button></div>}<Diary state={state} onReading={actions.markReading} onEvent={id => actions.open('event', { id })} feedRef={feedRef} /><Link to="/history">すべての記録を読む</Link></section><CompanyStatus state={state} onOpen={kind => actions.open(kind)} onHelp={actions.help} /></div></main>;
 }
 
 export function HistoryPage() {

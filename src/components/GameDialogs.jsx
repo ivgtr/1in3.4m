@@ -6,6 +6,8 @@ import { dateAt, displayText, money } from '../game/format.js';
 import { Button, ChoiceCard, Dialog, SpeedControls } from './ui.jsx';
 import { CompanyDetails, Generations, People } from './CompanyViews.jsx';
 import { EvidenceGuide } from './Evidence.jsx';
+import { Notification } from './Notification.jsx';
+import { ErrorBoundary } from './ErrorBoundary.jsx';
 
 export function exportCompany(state) {
   const url = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }));
@@ -44,7 +46,7 @@ function Archives({ onLoad }) {
 }
 
 export function GameDialogs({ onNavigate }) {
-  const { state, preferences, dialogs, actions, error, initialError } = useGame();
+  const { state, preferences, dialogs, actions } = useGame();
   function returnToGame(operation) {
     operation();
     onNavigate('/');
@@ -59,6 +61,7 @@ export function GameDialogs({ onNavigate }) {
   }
   const titles = { company: '会社のこと', people: 'この会社と、縁のある人たち', generations: '経営者の時代と会社の経過', evidence: '実測・推計・仮定の境界', settings: '見守り方の設定', policies: '備えと資金繰り', family: '家族の後継候補を登録', event: '同じ人物・取引・選択の記録', new: '今の会社を残して、新しい出会いへ', archives: '保存した会社', 'save-pause': '記録を保存して中断' };
   return <>{dialogs.map((dialog, index) => <Dialog key={`${index}-${dialog.kind}`} title={titles[dialog.kind]} size={['company', 'people', 'generations', 'evidence', 'event'].includes(dialog.kind) ? 'wide' : 'medium'} onClose={actions.dismiss} headerActions={index > 0 ? <span className="note">閉じると前の画面へ戻ります</span> : null}>
+    {index === dialogs.length - 1 && <Notification />}
     {dialog.kind === 'company' && <CompanyDetails state={state} onAction={onAction} onHelp={id => returnToGame(() => actions.help(id))} />}
     {dialog.kind === 'people' && <People state={state} onEvent={id => actions.open('event', { id })} onContact={id => returnToGame(() => actions.contact(id))} />}
     {dialog.kind === 'generations' && <Generations state={state} />}
@@ -68,7 +71,7 @@ export function GameDialogs({ onNavigate }) {
     {dialog.kind === 'family' && <FamilyForm onSave={name => returnToGame(() => actions.family(name))} />}
     {dialog.kind === 'event' && <EventHistory state={state} id={dialog.id} />}
     {dialog.kind === 'new' && <><p>「{state.name}」の{state.calendarMonth}か月の記録と、判断・結果待ちをこのブラウザに保存します。会社は廃業しません。「保存した会社」から再開できます。</p><Button variant="primary" onClick={() => returnToGame(actions.newCompany)}>記録を残して、新しい会社へ</Button></>}
-    {dialog.kind === 'archives' && <Archives onLoad={id => returnToGame(() => actions.loadArchive(id))} />}
+    {dialog.kind === 'archives' && <ErrorBoundary onError={problem => actions.notify('error', `保存した会社の一覧を読み込めません。${problem.message}`)} fallback={() => <><p>保存した会社の一覧を読み込めません。</p><p>この画面を閉じて戻れます。保存データは変更していません。一覧を再び開くには、保存データの読み取りエラーを解消してから開き直してください。</p></>}><Archives onLoad={id => returnToGame(() => actions.loadArchive(id))} /></ErrorBoundary>}
     {dialog.kind === 'save-pause' && <><p>この会社の経過は保存されています。会社は終了していません。閉じた後も、再生を押すまで進みません。</p><Button onClick={() => exportCompany(state)}>記録を書き出す</Button></>}
-  </Dialog>)}{error && !initialError && <Dialog title="進行を止めました" size="small" onClose={actions.clearError}><p role="alert">{error}</p><p>保存ができなかった場合、変更前の会社を残しています。</p></Dialog>}</>;
+  </Dialog>)}</>;
 }
