@@ -1,0 +1,677 @@
+{
+  "model": "company-life-3",
+  "dataVersion": "demo-lives-3",
+  "classification": "デモ内の生成集計",
+  "method": "各境遇240社。困りごとを確認する各回に50%で自主対処を開き、選択可能な案から一様に抽選。初期条件・会社の乱数と方針選択の乱数は別。創業から20四半期または資金不足まで。現実の確率ではない。",
+  "seedBase": 172026,
+  "groups": {
+    "independent": {
+      "count": 240,
+      "initialTeam": 2,
+      "survived": 240,
+      "insolvent": 0,
+      "longRelations": 240,
+      "changedTeam": 118,
+      "referralCompanies": 223,
+      "decisionCompanies": {
+        "large": 159,
+        "relationship": 197,
+        "workload": 230,
+        "inquiry": 240,
+        "team": 86,
+        "hiring": 86,
+        "finance": 18,
+        "crisis": 13,
+        "renewal": 31,
+        "delegation": 34
+      },
+      "patterns": {
+        "referral_trial": {
+          "eligible": 167,
+          "continued": 94
+        },
+        "expand_adjust": {
+          "eligible": 52,
+          "continued": 52
+        },
+        "hire_relieve": {
+          "eligible": 10,
+          "continued": 10
+        }
+      },
+      "quarters": {
+        "1": {
+          "count": 240,
+          "load": [
+            132,
+            93,
+            15,
+            0
+          ]
+        },
+        "2": {
+          "count": 240,
+          "load": [
+            91,
+            104,
+            44,
+            1
+          ]
+        },
+        "3": {
+          "count": 240,
+          "load": [
+            81,
+            105,
+            41,
+            13
+          ]
+        },
+        "4": {
+          "count": 240,
+          "load": [
+            94,
+            78,
+            45,
+            23
+          ]
+        },
+        "5": {
+          "count": 240,
+          "load": [
+            75,
+            86,
+            55,
+            24
+          ]
+        },
+        "6": {
+          "count": 240,
+          "load": [
+            79,
+            78,
+            48,
+            35
+          ]
+        },
+        "7": {
+          "count": 240,
+          "load": [
+            72,
+            74,
+            59,
+            35
+          ]
+        },
+        "8": {
+          "count": 240,
+          "load": [
+            83,
+            73,
+            44,
+            40
+          ]
+        },
+        "9": {
+          "count": 240,
+          "load": [
+            88,
+            64,
+            48,
+            40
+          ]
+        },
+        "10": {
+          "count": 240,
+          "load": [
+            92,
+            62,
+            33,
+            53
+          ]
+        },
+        "11": {
+          "count": 240,
+          "load": [
+            95,
+            61,
+            37,
+            47
+          ]
+        },
+        "12": {
+          "count": 240,
+          "load": [
+            82,
+            65,
+            49,
+            44
+          ]
+        },
+        "13": {
+          "count": 240,
+          "load": [
+            82,
+            64,
+            42,
+            52
+          ]
+        },
+        "14": {
+          "count": 240,
+          "load": [
+            74,
+            63,
+            46,
+            57
+          ]
+        },
+        "15": {
+          "count": 240,
+          "load": [
+            70,
+            60,
+            40,
+            70
+          ]
+        },
+        "16": {
+          "count": 240,
+          "load": [
+            63,
+            62,
+            45,
+            70
+          ]
+        },
+        "17": {
+          "count": 240,
+          "load": [
+            63,
+            60,
+            52,
+            65
+          ]
+        },
+        "18": {
+          "count": 240,
+          "load": [
+            68,
+            63,
+            38,
+            71
+          ]
+        },
+        "19": {
+          "count": 240,
+          "load": [
+            73,
+            52,
+            43,
+            72
+          ]
+        },
+        "20": {
+          "count": 240,
+          "load": [
+            79,
+            52,
+            41,
+            68
+          ]
+        }
+      },
+      "averageDecisions": 12,
+      "averageMonthsPerObserve": 1.9,
+      "initialCashMedian": 804,
+      "initialCashRange": [
+        680,
+        939
+      ]
+    },
+    "builders": {
+      "count": 240,
+      "initialTeam": 3,
+      "survived": 149,
+      "insolvent": 91,
+      "longRelations": 168,
+      "changedTeam": 165,
+      "referralCompanies": 226,
+      "decisionCompanies": {
+        "inquiry": 240,
+        "finance": 135,
+        "crisis": 117,
+        "relationship": 97,
+        "workload": 80,
+        "hiring": 14,
+        "large": 73,
+        "delegation": 21,
+        "team": 5,
+        "renewal": 13
+      },
+      "patterns": {
+        "referral_trial": {
+          "eligible": 134,
+          "continued": 96
+        },
+        "expand_adjust": {
+          "eligible": 4,
+          "continued": 4
+        }
+      },
+      "quarters": {
+        "1": {
+          "count": 240,
+          "load": [
+            240,
+            0,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 240,
+          "load": [
+            240,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 240,
+          "load": [
+            240,
+            0,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 240,
+          "load": [
+            238,
+            2,
+            0,
+            0
+          ]
+        },
+        "5": {
+          "count": 225,
+          "load": [
+            222,
+            3,
+            0,
+            0
+          ]
+        },
+        "6": {
+          "count": 196,
+          "load": [
+            192,
+            4,
+            0,
+            0
+          ]
+        },
+        "7": {
+          "count": 182,
+          "load": [
+            168,
+            12,
+            2,
+            0
+          ]
+        },
+        "8": {
+          "count": 177,
+          "load": [
+            154,
+            17,
+            4,
+            2
+          ]
+        },
+        "9": {
+          "count": 166,
+          "load": [
+            133,
+            22,
+            10,
+            1
+          ]
+        },
+        "10": {
+          "count": 166,
+          "load": [
+            124,
+            32,
+            7,
+            3
+          ]
+        },
+        "11": {
+          "count": 164,
+          "load": [
+            119,
+            25,
+            15,
+            5
+          ]
+        },
+        "12": {
+          "count": 160,
+          "load": [
+            103,
+            36,
+            15,
+            6
+          ]
+        },
+        "13": {
+          "count": 154,
+          "load": [
+            89,
+            45,
+            8,
+            12
+          ]
+        },
+        "14": {
+          "count": 152,
+          "load": [
+            81,
+            44,
+            12,
+            15
+          ]
+        },
+        "15": {
+          "count": 150,
+          "load": [
+            75,
+            42,
+            21,
+            12
+          ]
+        },
+        "16": {
+          "count": 150,
+          "load": [
+            74,
+            41,
+            21,
+            14
+          ]
+        },
+        "17": {
+          "count": 149,
+          "load": [
+            66,
+            51,
+            17,
+            15
+          ]
+        },
+        "18": {
+          "count": 149,
+          "load": [
+            66,
+            43,
+            30,
+            10
+          ]
+        },
+        "19": {
+          "count": 149,
+          "load": [
+            61,
+            45,
+            26,
+            17
+          ]
+        },
+        "20": {
+          "count": 149,
+          "load": [
+            55,
+            46,
+            28,
+            20
+          ]
+        }
+      },
+      "averageDecisions": 8.8,
+      "averageMonthsPerObserve": 1.9,
+      "initialCashMedian": 1847,
+      "initialCashRange": [
+        1654,
+        2050
+      ]
+    },
+    "local": {
+      "count": 240,
+      "initialTeam": 1,
+      "survived": 238,
+      "insolvent": 2,
+      "longRelations": 240,
+      "changedTeam": 0,
+      "referralCompanies": 223,
+      "decisionCompanies": {
+        "large": 152,
+        "inquiry": 239,
+        "workload": 239,
+        "relationship": 234,
+        "renewal": 25,
+        "team": 15,
+        "hiring": 108,
+        "finance": 37,
+        "crisis": 28,
+        "delegation": 7
+      },
+      "patterns": {
+        "referral_trial": {
+          "eligible": 162,
+          "continued": 39
+        },
+        "expand_adjust": {
+          "eligible": 68,
+          "continued": 68
+        },
+        "hire_relieve": {
+          "eligible": 6,
+          "continued": 4
+        }
+      },
+      "quarters": {
+        "1": {
+          "count": 240,
+          "load": [
+            31,
+            111,
+            76,
+            22
+          ]
+        },
+        "2": {
+          "count": 240,
+          "load": [
+            35,
+            69,
+            71,
+            65
+          ]
+        },
+        "3": {
+          "count": 240,
+          "load": [
+            43,
+            66,
+            68,
+            63
+          ]
+        },
+        "4": {
+          "count": 240,
+          "load": [
+            38,
+            63,
+            66,
+            73
+          ]
+        },
+        "5": {
+          "count": 240,
+          "load": [
+            60,
+            61,
+            51,
+            68
+          ]
+        },
+        "6": {
+          "count": 240,
+          "load": [
+            69,
+            61,
+            41,
+            69
+          ]
+        },
+        "7": {
+          "count": 240,
+          "load": [
+            72,
+            39,
+            56,
+            73
+          ]
+        },
+        "8": {
+          "count": 240,
+          "load": [
+            88,
+            42,
+            46,
+            64
+          ]
+        },
+        "9": {
+          "count": 240,
+          "load": [
+            82,
+            56,
+            43,
+            59
+          ]
+        },
+        "10": {
+          "count": 240,
+          "load": [
+            106,
+            45,
+            40,
+            49
+          ]
+        },
+        "11": {
+          "count": 240,
+          "load": [
+            108,
+            53,
+            32,
+            47
+          ]
+        },
+        "12": {
+          "count": 239,
+          "load": [
+            101,
+            57,
+            33,
+            48
+          ]
+        },
+        "13": {
+          "count": 239,
+          "load": [
+            105,
+            53,
+            26,
+            55
+          ]
+        },
+        "14": {
+          "count": 239,
+          "load": [
+            87,
+            58,
+            40,
+            54
+          ]
+        },
+        "15": {
+          "count": 239,
+          "load": [
+            85,
+            59,
+            37,
+            58
+          ]
+        },
+        "16": {
+          "count": 239,
+          "load": [
+            79,
+            56,
+            36,
+            68
+          ]
+        },
+        "17": {
+          "count": 239,
+          "load": [
+            75,
+            56,
+            46,
+            62
+          ]
+        },
+        "18": {
+          "count": 239,
+          "load": [
+            76,
+            55,
+            47,
+            61
+          ]
+        },
+        "19": {
+          "count": 238,
+          "load": [
+            72,
+            68,
+            40,
+            58
+          ]
+        },
+        "20": {
+          "count": 238,
+          "load": [
+            69,
+            64,
+            46,
+            59
+          ]
+        }
+      },
+      "averageDecisions": 13.5,
+      "averageMonthsPerObserve": 1.6,
+      "initialCashMedian": 428,
+      "initialCashRange": [
+        340,
+        528
+      ]
+    }
+  }
+}

@@ -1,0 +1,751 @@
+{
+  "version": "generations-5",
+  "classification": "実測・推計・仮定の混合。parametersは従来の仮定",
+  "unit": "万円 / 四半期",
+  "scope": "架空の小規模受託ソフトウェア会社・継続観測",
+  "population": "IPA小規模企業群と公庫49人以下採用実施企業を条件付きで参照。全企業の代表ではない",
+  "sourceUrl": null,
+  "table": null,
+  "referenceYear": null,
+  "retrievedAt": null,
+  "statisticType": "ゲーム設計値",
+  "licenseStatus": "独自に設定した数値。統計の転載なし",
+  "limitations": "納品・給与・通常回収は四半期、備え・サイバー・採用予定は月次。税・減価償却・貸倒・家計・法的清算配当は省略。寿命や終了理由の実測校正は未達。承継後の実統計は対象・期間・指標の異なる参考で、毎年の成長確率にはしない。先代の加齢・死亡・家計は未モデル化。",
+  "missingPolicy": "必須値の欠測はエラー。0には置換しない",
+  "parameters": {
+    "founderPay": 90,
+    "employeePay": 130,
+    "overhead": 45,
+    "capacityPerPerson": 230,
+    "collectionShare": 0.55,
+    "quarterlyInterest": 0.0125,
+    "quarterlyPrincipal": 25,
+    "hireChance": 0.66,
+    "delayChance": 0.1,
+    "departureChance": 0.025,
+    "salesChance": 0.55,
+    "contractionChance": 0.07,
+    "macroStay": 0.72,
+    "referralChance": 0.6,
+    "offerChance": 0.27,
+    "pipelineChance": 0.15,
+    "additionChance": 0.1,
+    "trialConversionChance": 0.76,
+    "underbookedPipelineChance": 0.55
+  },
+  "parameterMetadata": {
+    "founderPay": {
+      "id": "founderPay",
+      "meaning": "創業者の役員報酬",
+      "unit": "万円/四半期",
+      "usedBy": "通常費用と現金支出",
+      "period": "四半期",
+      "scope": "架空の小規模受託ソフトウェア会社・創業5年以内",
+      "population": "実測の母集団なし。現実の存続率を再現しない",
+      "sourceUrl": null,
+      "table": null,
+      "referenceYear": null,
+      "retrievedAt": null,
+      "statisticType": "ゲーム設計値",
+      "classification": "ゲーム上の仮置き",
+      "method": "独自仮置き。公表統計からの推定・加工なし。",
+      "fallback": "必須値の欠測は読込エラー",
+      "licenseStatus": "独自に設定した数値。統計の転載なし",
+      "limitations": "実測の確率や経営判断には適用不可",
+      "datasetVersion": "demo-lives-3"
+    },
+    "employeePay": {
+      "id": "employeePay",
+      "meaning": "社員1人の給与",
+      "unit": "万円/人/四半期",
+      "usedBy": "通常費用と現金支出",
+      "period": "四半期",
+      "scope": "架空の小規模受託ソフトウェア会社・創業5年以内",
+      "population": "実測の母集団なし。現実の存続率を再現しない",
+      "sourceUrl": null,
+      "table": null,
+      "referenceYear": null,
+      "retrievedAt": null,
+      "statisticType": "ゲーム設計値",
+      "classification": "ゲーム上の仮置き",
+      "method": "独自仮置き。公表統計からの推定・加工なし。",
+      "fallback": "必須値の欠測は読込エラー",
+      "licenseStatus": "独自に設定した数値。統計の転載なし",
+      "limitations": "実測の確率や経営判断には適用不可",
+      "datasetVersion": "demo-lives-3"
+    },
+    "overhead": {
+      "id": "overhead",
+      "meaning": "固定費",
+      "unit": "万円/四半期",
+      "usedBy": "通常費用と現金支出",
+      "period": "四半期",
+      "scope": "架空の小規模受託ソフトウェア会社・創業5年以内",
+      "population": "実測の母集団なし。現実の存続率を再現しない",
+      "sourceUrl": null,
+      "table": null,
+      "referenceYear": null,
+      "retrievedAt": null,
+      "statisticType": "ゲーム設計値",
+      "classification": "ゲーム上の仮置き",
+      "method": "独自仮置き。公表統計からの推定・加工なし。",
+      "fallback": "必須値の欠測は読込エラー",
+      "licenseStatus": "独自に設定した数値。統計の転載なし",
+      "limitations": "実測の確率や経営判断には適用不可",
+      "datasetVersion": "demo-lives-3"
+    },
+    "capacityPerPerson": {
+      "id": "capacityPerPerson",
+      "meaning": "1人の基準処理能力",
+      "unit": "納品売上換算の万円/人/四半期",
+      "usedBy": "売上上限・受注残",
+      "period": "四半期",
+      "scope": "架空の小規模受託ソフトウェア会社・創業5年以内",
+      "population": "実測の母集団なし。現実の存続率を再現しない",
+      "sourceUrl": null,
+      "table": null,
+      "referenceYear": null,
+      "retrievedAt": null,
+      "statisticType": "ゲーム設計値",
+      "classification": "ゲーム上の仮置き",
+      "method": "独自仮置き。公表統計からの推定・加工なし。",
+      "fallback": "必須値の欠測は読込エラー",
+      "licenseStatus": "独自に設定した数値。統計の転載なし",
+      "limitations": "実測の確率や経営判断には適用不可",
+      "datasetVersion": "demo-lives-3"
+    },
+    "collectionShare": {
+      "id": "collectionShare",
+      "meaning": "通常の当期回収割合",
+      "unit": "割合",
+      "usedBy": "売上から当期現金と翌期売掛金へ分割",
+      "period": "四半期",
+      "scope": "架空の小規模受託ソフトウェア会社・創業5年以内",
+      "population": "実測の母集団なし。現実の存続率を再現しない",
+      "sourceUrl": null,
+      "table": null,
+      "referenceYear": null,
+      "retrievedAt": null,
+      "statisticType": "ゲーム設計値",
+      "classification": "ゲーム上の仮置き",
+      "method": "独自仮置き。公表統計からの推定・加工なし。",
+      "fallback": "必須値の欠測は読込エラー",
+      "licenseStatus": "独自に設定した数値。統計の転載なし",
+      "limitations": "実測の確率や経営判断には適用不可",
+      "datasetVersion": "demo-lives-3"
+    },
+    "quarterlyInterest": {
+      "id": "quarterlyInterest",
+      "meaning": "借入の四半期利率",
+      "unit": "四半期割合",
+      "usedBy": "借入残高から利息算出",
+      "period": "四半期",
+      "scope": "架空の小規模受託ソフトウェア会社・創業5年以内",
+      "population": "実測の母集団なし。現実の存続率を再現しない",
+      "sourceUrl": null,
+      "table": null,
+      "referenceYear": null,
+      "retrievedAt": null,
+      "statisticType": "ゲーム設計値",
+      "classification": "ゲーム上の仮置き",
+      "method": "独自仮置き。公表統計からの推定・加工なし。",
+      "fallback": "必須値の欠測は読込エラー",
+      "licenseStatus": "独自に設定した数値。統計の転載なし",
+      "limitations": "実測の確率や経営判断には適用不可",
+      "datasetVersion": "demo-lives-3"
+    },
+    "quarterlyPrincipal": {
+      "id": "quarterlyPrincipal",
+      "meaning": "定期元本返済額",
+      "unit": "万円/四半期",
+      "usedBy": "現金と借入残高の減少",
+      "period": "四半期",
+      "scope": "架空の小規模受託ソフトウェア会社・創業5年以内",
+      "population": "実測の母集団なし。現実の存続率を再現しない",
+      "sourceUrl": null,
+      "table": null,
+      "referenceYear": null,
+      "retrievedAt": null,
+      "statisticType": "ゲーム設計値",
+      "classification": "ゲーム上の仮置き",
+      "method": "独自仮置き。公表統計からの推定・加工なし。",
+      "fallback": "必須値の欠測は読込エラー",
+      "licenseStatus": "独自に設定した数値。統計の転載なし",
+      "limitations": "実測の確率や経営判断には適用不可",
+      "datasetVersion": "demo-lives-3"
+    },
+    "hireChance": {
+      "id": "hireChance",
+      "meaning": "採用活動の成約確率",
+      "unit": "1活動/四半期の確率",
+      "usedBy": "採用の抽選",
+      "period": "四半期",
+      "scope": "架空の小規模受託ソフトウェア会社・創業5年以内",
+      "population": "実測の母集団なし。現実の存続率を再現しない",
+      "sourceUrl": null,
+      "table": null,
+      "referenceYear": null,
+      "retrievedAt": null,
+      "statisticType": "ゲーム設計値",
+      "classification": "ゲーム上の仮置き",
+      "method": "独自仮置き。公表統計からの推定・加工なし。",
+      "fallback": "必須値の欠測は読込エラー",
+      "licenseStatus": "独自に設定した数値。統計の転載なし",
+      "limitations": "実測の確率や経営判断には適用不可",
+      "datasetVersion": "demo-lives-3"
+    },
+    "delayChance": {
+      "id": "delayChance",
+      "meaning": "当期入金の遅延確率",
+      "unit": "対象四半期の確率",
+      "usedBy": "再発抑制期間外の入金遅延抽選",
+      "period": "四半期",
+      "scope": "架空の小規模受託ソフトウェア会社・創業5年以内",
+      "population": "実測の母集団なし。現実の存続率を再現しない",
+      "sourceUrl": null,
+      "table": null,
+      "referenceYear": null,
+      "retrievedAt": null,
+      "statisticType": "ゲーム設計値",
+      "classification": "ゲーム上の仮置き",
+      "method": "独自仮置き。公表統計からの推定・加工なし。",
+      "fallback": "必須値の欠測は読込エラー",
+      "licenseStatus": "独自に設定した数値。統計の転載なし",
+      "limitations": "実測の確率や経営判断には適用不可",
+      "datasetVersion": "demo-lives-3"
+    },
+    "departureChance": {
+      "id": "departureChance",
+      "meaning": "通常時の退職確率",
+      "unit": "対象四半期の確率",
+      "usedBy": "疲労による補正を加え退職抽選",
+      "period": "四半期",
+      "scope": "架空の小規模受託ソフトウェア会社・創業5年以内",
+      "population": "実測の母集団なし。現実の存続率を再現しない",
+      "sourceUrl": null,
+      "table": null,
+      "referenceYear": null,
+      "retrievedAt": null,
+      "statisticType": "ゲーム設計値",
+      "classification": "ゲーム上の仮置き",
+      "method": "独自仮置き。公表統計からの推定・加工なし。",
+      "fallback": "必須値の欠測は読込エラー",
+      "licenseStatus": "独自に設定した数値。統計の転載なし",
+      "limitations": "実測の確率や経営判断には適用不可",
+      "datasetVersion": "demo-lives-3"
+    },
+    "salesChance": {
+      "id": "salesChance",
+      "meaning": "営業の基礎成約確率",
+      "unit": "1活動/四半期の確率",
+      "usedBy": "経験補正を加え新規顧客獲得抽選",
+      "period": "四半期",
+      "scope": "架空の小規模受託ソフトウェア会社・創業5年以内",
+      "population": "実測の母集団なし。現実の存続率を再現しない",
+      "sourceUrl": null,
+      "table": null,
+      "referenceYear": null,
+      "retrievedAt": null,
+      "statisticType": "ゲーム設計値",
+      "classification": "ゲーム上の仮置き",
+      "method": "独自仮置き。公表統計からの推定・加工なし。",
+      "fallback": "必須値の欠測は読込エラー",
+      "licenseStatus": "独自に設定した数値。統計の転載なし",
+      "limitations": "実測の確率や経営判断には適用不可",
+      "datasetVersion": "demo-lives-3"
+    },
+    "contractionChance": {
+      "id": "contractionChance",
+      "meaning": "契約縮小の基礎確率",
+      "unit": "対象四半期の確率",
+      "usedBy": "景気・顧客対応で補正して抽選",
+      "period": "四半期",
+      "scope": "架空の小規模受託ソフトウェア会社・創業5年以内",
+      "population": "実測の母集団なし。現実の存続率を再現しない",
+      "sourceUrl": null,
+      "table": null,
+      "referenceYear": null,
+      "retrievedAt": null,
+      "statisticType": "ゲーム設計値",
+      "classification": "ゲーム上の仮置き",
+      "method": "独自仮置き。公表統計からの推定・加工なし。",
+      "fallback": "必須値の欠測は読込エラー",
+      "licenseStatus": "独自に設定した数値。統計の転載なし",
+      "limitations": "実測の確率や経営判断には適用不可",
+      "datasetVersion": "demo-lives-3"
+    },
+    "macroStay": {
+      "id": "macroStay",
+      "meaning": "景気を再抽選せず維持する確率",
+      "unit": "四半期確率",
+      "usedBy": "残余確率では3状態から均等再抽選。同状態も含む",
+      "period": "四半期",
+      "scope": "架空の小規模受託ソフトウェア会社・創業5年以内",
+      "population": "実測の母集団なし。現実の存続率を再現しない",
+      "sourceUrl": null,
+      "table": null,
+      "referenceYear": null,
+      "retrievedAt": null,
+      "statisticType": "ゲーム設計値",
+      "classification": "ゲーム上の仮置き",
+      "method": "独自仮置き。公表統計からの推定・加工なし。",
+      "fallback": "必須値の欠測は読込エラー",
+      "licenseStatus": "独自に設定した数値。統計の転載なし",
+      "limitations": "実測の確率や経営判断には適用不可",
+      "datasetVersion": "demo-lives-3"
+    },
+    "referralChance": {
+      "id": "referralChance",
+      "meaning": "失注・見送り後の紹介発生確率",
+      "unit": "対象四半期または予定された照会1回の確率",
+      "usedBy": "対応する状態条件と再発抑制期間を通過した抽選",
+      "classification": "ゲーム上の仮置き",
+      "sourceUrl": null,
+      "referenceYear": null,
+      "statisticType": "ゲーム設計値",
+      "population": "実測の母集団なし",
+      "method": "独自仮置き",
+      "limitations": "現実の確率や個社判断に適用不可",
+      "fallback": "欠測時エラー",
+      "licenseStatus": "独自値",
+      "datasetVersion": "demo-lives-3"
+    },
+    "offerChance": {
+      "id": "offerChance",
+      "meaning": "顧客から大口相談が届く確率",
+      "unit": "対象四半期または予定された照会1回の確率",
+      "usedBy": "対応する状態条件と再発抑制期間を通過した抽選",
+      "classification": "ゲーム上の仮置き",
+      "sourceUrl": null,
+      "referenceYear": null,
+      "statisticType": "ゲーム設計値",
+      "population": "実測の母集団なし",
+      "method": "独自仮置き",
+      "limitations": "現実の確率や個社判断に適用不可",
+      "fallback": "欠測時エラー",
+      "licenseStatus": "独自値",
+      "datasetVersion": "demo-lives-3"
+    },
+    "pipelineChance": {
+      "id": "pipelineChance",
+      "meaning": "既存関係から問い合わせが届く確率",
+      "unit": "対象四半期または予定された照会1回の確率",
+      "usedBy": "対応する状態条件と再発抑制期間を通過した抽選",
+      "classification": "ゲーム上の仮置き",
+      "sourceUrl": null,
+      "referenceYear": null,
+      "statisticType": "ゲーム設計値",
+      "population": "実測の母集団なし",
+      "method": "独自仮置き",
+      "limitations": "現実の確率や個社判断に適用不可",
+      "fallback": "欠測時エラー",
+      "licenseStatus": "独自値",
+      "datasetVersion": "demo-lives-3"
+    },
+    "additionChance": {
+      "id": "additionChance",
+      "meaning": "追加受注が届く確率",
+      "unit": "対象四半期または予定された照会1回の確率",
+      "usedBy": "対応する状態条件と再発抑制期間を通過した抽選",
+      "classification": "ゲーム上の仮置き",
+      "sourceUrl": null,
+      "referenceYear": null,
+      "statisticType": "ゲーム設計値",
+      "population": "実測の母集団なし",
+      "method": "独自仮置き",
+      "limitations": "現実の確率や個社判断に適用不可",
+      "fallback": "欠測時エラー",
+      "licenseStatus": "独自値",
+      "datasetVersion": "demo-lives-3"
+    },
+    "trialConversionChance": {
+      "id": "trialConversionChance",
+      "meaning": "試作を継続契約にする基礎確率",
+      "unit": "対象四半期または予定された照会1回の確率",
+      "usedBy": "対応する状態条件と再発抑制期間を通過した抽選",
+      "classification": "ゲーム上の仮置き",
+      "sourceUrl": null,
+      "referenceYear": null,
+      "statisticType": "ゲーム設計値",
+      "population": "実測の母集団なし",
+      "method": "独自仮置き",
+      "limitations": "現実の確率や個社判断に適用不可",
+      "fallback": "欠測時エラー",
+      "licenseStatus": "独自値",
+      "datasetVersion": "demo-lives-3"
+    },
+    "underbookedPipelineChance": {
+      "id": "underbookedPipelineChance",
+      "meaning": "3社未満かつ前期の充足率80%未満で、次の問い合わせが届く確率",
+      "unit": "対象四半期または予定された照会1回の確率",
+      "usedBy": "対応する状態条件と再発抑制期間を通過した抽選",
+      "classification": "ゲーム上の仮置き",
+      "sourceUrl": null,
+      "referenceYear": null,
+      "statisticType": "ゲーム設計値",
+      "population": "実測の母集団なし",
+      "method": "独自仮置き",
+      "limitations": "現実の確率や個社判断に適用不可",
+      "fallback": "欠測時エラー",
+      "licenseStatus": "独自値",
+      "datasetVersion": "demo-lives-3"
+    }
+  },
+  "origins": [
+    {
+      "id": "independent",
+      "label": "顧客と独立した経験者",
+      "headline": "「次の仕事も、あなたに」と言われて。",
+      "description": "前職で関わった東和商事が、独立後も仕事を任せてくれた。頼れる佐藤も一緒だ。ただ、売上の多くを一社に預けている。",
+      "region": "都市近郊・既存の商流",
+      "cash": [
+        680,
+        940
+      ],
+      "experience": [
+        10,
+        16
+      ],
+      "debt": 300,
+      "fixed": 55,
+      "skill": 1.04,
+      "team": [
+        "佐藤"
+      ],
+      "clients": [
+        {
+          "name": "東和商事",
+          "value": [
+            290,
+            350
+          ],
+          "relation": 72
+        },
+        {
+          "name": "若葉印刷",
+          "value": [
+            45,
+            70
+          ],
+          "relation": 50
+        }
+      ],
+      "strength": "初日から仕事と信頼がある",
+      "tension": "東和商事への依存が大きい",
+      "color": "#648365",
+      "teamSalary": 130
+    },
+    {
+      "id": "builders",
+      "label": "顧客のいない創業チーム",
+      "headline": "いいものは作れる。最初の顧客は、まだいない。",
+      "description": "田中と鈴木、そしてあなた。共に作った技術には自信がある。小さなスタジオを借りたが、確かな継続顧客はまだいない。八木編集室から試作の問い合わせが一件届いている。",
+      "region": "都市部・競争の多い市場",
+      "cash": [
+        1650,
+        2050
+      ],
+      "experience": [
+        3,
+        8
+      ],
+      "debt": 450,
+      "fixed": 70,
+      "skill": 1.16,
+      "team": [
+        "田中",
+        "鈴木"
+      ],
+      "clients": [],
+      "strength": "3人分の開発力と技術がある",
+      "tension": "顧客がつく前から固定費がかかる",
+      "color": "#a37a57",
+      "teamSalary": 90
+    },
+    {
+      "id": "local",
+      "label": "地元の信頼に支えられた会社",
+      "headline": "大きな資金はない。でも、知っている顔がある。",
+      "description": "商店街の紹介で、丸山製作所とつばめ商店の仕事が始まった。拠点は小さな一室。まずはひとりで、顔の見える相手と続けていく。",
+      "region": "地方都市・地域の紹介網",
+      "cash": [
+        340,
+        530
+      ],
+      "experience": [
+        5,
+        11
+      ],
+      "debt": 150,
+      "fixed": 25,
+      "skill": 0.97,
+      "team": [],
+      "clients": [
+        {
+          "name": "丸山製作所",
+          "value": [
+            130,
+            180
+          ],
+          "relation": 78
+        },
+        {
+          "name": "つばめ商店",
+          "value": [
+            65,
+            90
+          ],
+          "relation": 72
+        }
+      ],
+      "strength": "低い固定費と地元の紹介",
+      "tension": "資金の薄さと、ひとりの処理能力",
+      "color": "#a2a879",
+      "teamSalary": 130
+    }
+  ],
+  "originMetadata": {
+    "classification": "ゲーム上の仮置き",
+    "method": "資金・固定費・経験・顧客・仲間を3つの関連した境遇として構成。現実の境遇分布を再現するものではない。技術チームの創業仲間は役員相当の報酬90万円/期とし、採用後の社員給与とは区別する。",
+    "sourceUrl": null,
+    "selection": "新規会社では3種類から均等抽選。現実の比率ではない",
+    "datasetVersion": "demo-lives-3"
+  },
+  "peopleProfiles": [
+    {
+      "id": "steady",
+      "label": "経験を持つ即戦力",
+      "description": "既存案件の整理が得意。役割と受け持つ範囲をはっきりさせたい。",
+      "salary": 155,
+      "capacity": 270,
+      "rampQuarters": 1,
+      "rampFactor": 0.85,
+      "strainLimit": 56,
+      "concern": "担当範囲が広がり、優先順位を決めにくくなっている。"
+    },
+    {
+      "id": "learner",
+      "label": "育成しながら伸びる開発者",
+      "description": "給与は抑えめ。最初の半年は確認する相手と学ぶ時間が必要。",
+      "salary": 110,
+      "capacity": 220,
+      "rampQuarters": 2,
+      "rampFactor": 0.6,
+      "strainLimit": 62,
+      "concern": "判断を確認できる時間が足りず、仕事を抱え込んでいる。"
+    },
+    {
+      "id": "coordinator",
+      "label": "顧客と調整する開発者",
+      "description": "仕様のすり合わせが得意。開発と窓口を兼ねるため、業務量の調整を重視する。",
+      "salary": 135,
+      "capacity": 240,
+      "rampQuarters": 1,
+      "rampFactor": 0.8,
+      "strainLimit": 52,
+      "concern": "窓口対応と開発が重なり、仕事の切り分けが必要になっている。"
+    }
+  ],
+  "peopleProfileMetadata": {
+    "classification": "ゲーム上の仮置き",
+    "assignment": "候補者との出会い時に抽選し、その後は保存。名前とは独立。",
+    "sourceUrl": null,
+    "limitations": "人物の実測分類や採用の成功率ではない",
+    "datasetVersion": "demo-lives-3"
+  },
+  "evidence": {
+    "cyber": {
+      "kind": "実測",
+      "source": "IPA 2024年度 中小企業における情報セキュリティ対策に関する実態調査",
+      "url": "https://www.ipa.go.jp/security/reports/sme/nl10bi000000fbvc-att/sme-chousa-report2024r1.pdf",
+      "page": "212–213 図5-9・5-10",
+      "observed": "2023年度の発生経験（発生した可能性が高い場合を含む）。2024年10月25日〜11月6日Web調査",
+      "population": "小規模企業者2,775社。診断70点以上485社、69点以下2,290社。業種混合の登録モニターで、受託開発会社だけではない",
+      "high": {
+        "annual": 0.122,
+        "noImpact": 0.322,
+        "n": 485,
+        "incidentN": 59
+      },
+      "low": {
+        "annual": 0.171,
+        "noImpact": 0.23,
+        "n": 2290,
+        "incidentN": 391
+      },
+      "limit": "影響なしは発生経験企業に条件付けた割合。モデルでは会社の1年間の経験を最大1つの事件経過に集約し、同一年の複数事故は再現しない。発生・影響は自己申告。群間差は対策購入の因果効果ではない。"
+    },
+    "hiring": {
+      "kind": "実測",
+      "source": "日本政策金融公庫 中小企業における従業員の採用・定着に関する調査",
+      "url": "https://www.jfc.go.jp/n/findings/pdf/tokubetu_260619.pdf",
+      "page": "3 図5",
+      "observed": "2025年4月〜2026年3月の中途正社員採用活動、2026年3月調査",
+      "population": "公庫中小企業事業取引先。49人以下で中途採用活動を実施し、予定数と実数を回答した1,290社",
+      "underPlan": 0.319,
+      "limit": "候補者1人の失敗率でも3か月の失敗率でもない。1名計画の小さな開発会社への移植は推計。"
+    },
+    "departures": {
+      "kind": "実測・参考のみ",
+      "source": "同上",
+      "url": "https://www.jfc.go.jp/n/findings/pdf/tokubetu_260619.pdf",
+      "page": "6 図10",
+      "observed": "2025年度の退職者数",
+      "population": "49人以下、回答2,338社",
+      "zero": 0.454,
+      "limit": "社員個人の離職率ではなく、企業の年間退職者数。数人の会社と規模が一致しないため、個人の退職抽選には使わない。"
+    },
+    "closure": {
+      "kind": "実測・参考のみ",
+      "source": "帝国データバンク 全国企業「休廃業・解散」動向調査（2025年）",
+      "url": "https://www.tdb.co.jp/report/industry/20260109-kyuhaigyo25y/",
+      "page": "直近損益",
+      "observed": "2025年休廃業・解散企業",
+      "population": "TDB等の企業データベース。法的整理を除く休廃業・解散、個人事業主を含む",
+      "profitable": 0.491,
+      "limit": "休廃業企業の内訳であり、黒字企業の廃業確率ではない。終了の抽選に使わない。"
+    },
+    "survival": {
+      "kind": "実測・参考のみ",
+      "source": "公庫 新規開業パネル調査 2021年12月公表",
+      "url": "https://www.jfc.go.jp/n/findings/pdf/panel_211221.pdf",
+      "page": "1・3 表1",
+      "observed": "2016年末を基準に2020年末まで",
+      "population": "公庫融資先で2016年開業を確認した初回回答3,517社。不動産賃貸業を除く",
+      "active": 0.897,
+      "closed": 0.089,
+      "unknown": 0.014,
+      "limit": "基準時点から4年間。開業直後からの5年生存率ではない。対象・時代・業種構成が異なるため、本ゲーム全体を一致させる目標にしない。"
+    }
+  },
+  "assumedResponseParameters": {
+    "backupCost": 20,
+    "backupMonthly": 1,
+    "insuranceMonthly": 2,
+    "insuranceShare": 0.8,
+    "insuranceExcess": 10,
+    "programmeCost": 45,
+    "programmeMonths": 3,
+    "restoreMonths": 1,
+    "rebuildMonths": 3,
+    "expertCost": 45,
+    "depositShare": 0.3,
+    "factorFee": 0.05,
+    "rescueLimit": 300,
+    "transferMonths": 6,
+    "successionChance": 0.65,
+    "saleChance": 0.5,
+    "leakShare": 0.25
+  },
+  "activeModel": {
+    "version": "0.9.12",
+    "application": "新規会社と0.8へ明示移行した会社。過去・予定済み入社日は再計算しない",
+    "cyber": "IPA群別年率と影響なしを推計利用。被害ありの軽微45%/一部40%/全面15%、能力損失5%/35%/100%、復旧期間・費用は仮定。発生率と切り離す",
+    "hiring": "年間1名計画の達成判定と入社月を分離。通常募集の入社時期は仮定の2/3/4/6/9/12か月。候補へ切替・追加採用した計画を別集計。紹介保留は再連絡可能",
+    "departure": "parameters.departureChanceと負担による補正は仮定。企業単位の退職者分布を個人率に転用しない",
+    "cash": "parameters.delayChanceは仮定。前受金は負債として納品時充当。倒産の追加抽選なし",
+    "referral": "0.7の紹介による成約+8ポイントは撤去。受注率・紹介頻度は仮定が残る",
+    "endings": "清算・自主廃業・売却・合併は独立企業としての終了。社長交代は続行。保存中断は終了扱いしない。固定年数上限なし",
+    "code": "evidence.js / model.js",
+    "validation": "validation-v08.json",
+    "succession": "社員6か月/家族12か月の準備、在籍・負担・資金条件で交代。旧successionChance .65は0.8では未使用。資金・借入・社員・顧客・案件を維持。成長ボーナスなし",
+    "longTerm": "組織の負担・継続取引の維持費・採算に応じて経営判断。新事業への継続支出と試行、既存事業整理を会計に反映。外部実証のない仮定",
+    "legacyValidation": "validation.json（0.7の検証として保持）",
+    "concurrentRecovery": {
+      "classification": "仮定",
+      "rule": "各事故の復旧期限と能力低下を保持し、同時稼働中の最大能力低下を適用。終了月まで月次計上。",
+      "source": null,
+      "reason": "事故間の停止範囲の重なりを裏付ける実測資料は未採用。合計や独立積による上乗せはしない。",
+      "migration": "0.8の保存に残る復旧期限と能力低下を1件として維持。過去の会計や消失済み状態は再計算しない。"
+    },
+    "encounter": {
+      "classification": "仮定",
+      "scope": "新規会社のみ。3つの創業境遇を均等抽選し、境遇ごとの人数候補を均等抽選。名前・プロフィール・地域・取引額を抽選。",
+      "correlations": "創業人数の差1人につき資金範囲±240万円。地域の固定費差+15/0/-10万円と資金差+120/0/-60万円。顧客受注範囲を0.8/1/1.2倍。実測分布ではない。",
+      "persistence": "抽選結果と人物・顧客IDを保存。既存会社の初期条件は再抽選しない。"
+    },
+    "observation": {
+      "classification": "仮定",
+      "autoChoice": "実行可能な選択肢から均等に抽選する観察用モード。世界の乱数とは別系列を保存。最適化・現実の経営判断割合の再現ではない。",
+      "time": "通常は一定速度、初期値16秒/月。2/4/8/16/32秒/月。判断のおまかせ待機は別の6秒で、暦は停止。",
+      "orderCapacity": "現社員の能力・疲労・復旧中の損失・期間中外注と、基準受注・既存案件・積み残しを比較する見積もり。将来の納品を保証しない。",
+      "safeMode": "資金相談（finance）、資金危機（crisis/rescue）、終了相談（exit）は自動選択せず確認待ち。すべておまかせでは対象に含める。"
+    }
+  },
+  "generationEvidence": {
+    "profit": {
+      "kind": "実測・参考のみ",
+      "source": "RIETI掲載・家森信善の調査",
+      "url": "https://www.rieti.go.jp/jp/columns/s21_0005.html",
+      "page": "表1・注4",
+      "observed": "2019年2月調査。2011年7月〜2018年11月に承継",
+      "population": "兵庫県信用保証協会利用企業。利益比較回答610社",
+      "values": [
+        40.5,
+        42.3,
+        17.2
+      ],
+      "labels": [
+        "当期利益が増加",
+        "横ばい",
+        "減少"
+      ],
+      "limit": "承継時との比較。経過期間は一定でなく、売上や毎年の成長確率ではない。全国・小規模開発会社の代表ではない。"
+    },
+    "innovation": {
+      "kind": "実測・参考のみ",
+      "source": "公庫論集 第8号（2010年8月）",
+      "url": "https://www.jfc.go.jp/n/findings/pdf/ronbun1008_01.pdf",
+      "page": "p.2 表1 / p.6 図6",
+      "observed": "2009年7月。承継前と最近の業績を自己評価。固定追跡期間なし",
+      "population": "公庫融資先調査9,397回答から、2代目以降・従業者19人以下。取組企業2,064社／非取組251社",
+      "improved": [
+        43.8,
+        17.5
+      ],
+      "limit": "経営革新あり・なしの改善割合。売上・利益の実額とは異なる自己評価。選択効果の因果推定には使わない。"
+    },
+    "sales": {
+      "kind": "実測・定性的参考のみ",
+      "source": "2023年版中小企業白書",
+      "url": "https://www.chusho.meti.go.jp/pamflet/hakusyo/2023/PDF/chusho/04Hakusyo_part2_chap2_web.pdf",
+      "page": "第2-2-12・13図",
+      "observed": "2008〜2012年に1回交代、以後9年間の売上が観測可能",
+      "population": "TDB企業概要ファイル。図の分母件数は確認できていないため数値比較には使用しない",
+      "limit": "業種平均との差・成長率分布。継続観測可能企業への選択と外れ値除外あり。後続の3,551回答のアンケートとは別。成長確率に転用しない。"
+    }
+  },
+  "generationAssumptions": {
+    "hiringMonths": [
+      2,
+      3,
+      4,
+      6,
+      9,
+      12
+    ],
+    "hiringTiming": "達成する計画の入社月は6候補から均等。実測の採用期間ではない",
+    "harmShares": {
+      "minor": 0.45,
+      "partial": 0.4,
+      "total": 0.15
+    },
+    "capacityLoss": {
+      "minor": 0.05,
+      "partial": 0.35,
+      "total": 1
+    },
+    "minorCost": 3,
+    "partialExpertCost": 18,
+    "partialRebuildCost": 6,
+    "partialRestoreCost": 4,
+    "referralSwitchCost": 10,
+    "employeePreparationMonths": 6,
+    "familyPreparationMonths": 12,
+    "ventureQuarterCost": 18,
+    "ventureMonths": 18,
+    "ventureAdoption": 0.45,
+    "organisationQuarterCost": 12,
+    "comparison": "承継後の成長確率・利益増加ボーナスは置かない。以下の経営施策の費用・期間・状態効果は仮定"
+  }
+}

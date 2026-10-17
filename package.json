@@ -1,0 +1,14 @@
+{
+  "name": "1in3.4m",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "start": "node scripts/serve.mjs"
+  },
+  "version": "0.9.12",
+  "description": "A company life simulation inspired by 1 in 8 Billion",
+  "engines": {
+    "node": ">=22"
+  }
+}

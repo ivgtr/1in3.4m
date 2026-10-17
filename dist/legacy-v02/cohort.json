@@ -1,0 +1,86 @@
+{
+  "model": "company-life-2",
+  "dataVersion": "demo-lives-2",
+  "classification": "デモ内の生成集計",
+  "method": "各境遇240社。選択可能な案から一様に抽選。初期条件・会社の乱数と方針選択の乱数は別。創業から20四半期または資金不足まで。現実の確率ではない。",
+  "seedBase": 172026,
+  "groups": {
+    "independent": {
+      "count": 240,
+      "initialTeam": 2,
+      "survived": 236,
+      "insolvent": 4,
+      "longRelations": 240,
+      "changedTeam": 178,
+      "referralCompanies": 208,
+      "decisionCompanies": {
+        "large": 159,
+        "inquiry": 238,
+        "crisis": 21,
+        "relationship": 191,
+        "renewal": 45,
+        "team": 182,
+        "hiring": 185,
+        "delegation": 20
+      },
+      "averageDecisions": 8.9,
+      "averageMonthsPerObserve": 2.1,
+      "initialCashMedian": 804,
+      "initialCashRange": [
+        680,
+        939
+      ]
+    },
+    "builders": {
+      "count": 240,
+      "initialTeam": 3,
+      "survived": 85,
+      "insolvent": 155,
+      "longRelations": 94,
+      "changedTeam": 122,
+      "referralCompanies": 219,
+      "decisionCompanies": {
+        "inquiry": 240,
+        "crisis": 198,
+        "relationship": 54,
+        "large": 39,
+        "hiring": 26,
+        "delegation": 9,
+        "team": 21,
+        "renewal": 4
+      },
+      "averageDecisions": 6,
+      "averageMonthsPerObserve": 1.9,
+      "initialCashMedian": 1847,
+      "initialCashRange": [
+        1654,
+        2050
+      ]
+    },
+    "local": {
+      "count": 240,
+      "initialTeam": 1,
+      "survived": 231,
+      "insolvent": 9,
+      "longRelations": 236,
+      "changedTeam": 0,
+      "referralCompanies": 219,
+      "decisionCompanies": {
+        "large": 158,
+        "inquiry": 236,
+        "team": 130,
+        "hiring": 206,
+        "relationship": 232,
+        "crisis": 36,
+        "renewal": 38
+      },
+      "averageDecisions": 9.3,
+      "averageMonthsPerObserve": 2,
+      "initialCashMedian": 428,
+      "initialCashRange": [
+        340,
+        528
+      ]
+    }
+  }
+}
