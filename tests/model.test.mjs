@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {MODEL,create,advance,resolve,restore,close,validate,staff,activeTeam,activeClients,costs,reflection} from '../dist/model.js';
-const config=JSON.parse(fs.readFileSync(new URL('../dist/model-data.json',import.meta.url)));
+import {MODEL,create,advance,resolve,restore,close,validate,staff,activeTeam,activeClients,costs,reflection} from '../src/domain/model.js';
+const config=JSON.parse(fs.readFileSync(new URL('../src/domain/model-data.json',import.meta.url)));
 const near=(a,b)=>assert.ok(Math.abs(a-b)<.035,`${a} != ${b}`);
 function act(s,i=0){return s.pending?resolve(s,s.pending.options[i%s.pending.options.length].id):advance(s);}
 function run(s,policy=0){let clicks=0;while(!s.ended&&clicks<100){s=act(s,policy+clicks);clicks++;}assert.ok(s.ended);return s;}

@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-import {create,advance,resolve,requestHelp,cancelHelp,problems,restore,storyChapters,reviewRecord,experiencePatterns,personCapacity} from '../dist/model.js';
-const config=JSON.parse(fs.readFileSync(new URL('../dist/model-data.json',import.meta.url)));
+import {create,advance,resolve,requestHelp,cancelHelp,problems,restore,storyChapters,reviewRecord,experiencePatterns,personCapacity} from '../src/domain/model.js';
+const config=JSON.parse(fs.readFileSync(new URL('../src/domain/model-data.json',import.meta.url)));
 test('警告から直接対処でき、取消は乱数・保留中の相談も含め完全に元へ戻る',()=>{
  let s=advance(create(11,'A',config,'builders'));s.last.load=2.67;s.backlog=450;s.cash=10000;
  const opened=requestHelp(s,'workload');assert.equal(opened.q,s.q);assert.equal(opened.rng,s.rng);assert.deepEqual(cancelHelp(restore(JSON.stringify(opened))),s);

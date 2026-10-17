@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-import {Playback,displayDelay} from '../dist/playback.js';import {create,advance,resolve} from '../dist/model.js';
-const config=JSON.parse(fs.readFileSync(new URL('../dist/model-data.json',import.meta.url)));
+import {Playback,displayDelay} from '../src/domain/playback.js';import {create,advance,resolve} from '../src/domain/model.js';
+const config=JSON.parse(fs.readFileSync(new URL('../src/domain/model-data.json',import.meta.url)));
 function fake(){let id=0,elapsed=0;const pending=new Map(),old=[];return {pending,old,get elapsed(){return elapsed;},schedule(fn,ms){pending.set(++id,{fn,ms});old.push(fn);return id;},cancel(i){pending.delete(i);},next(){const [i,t]=pending.entries().next().value||[];if(!t)return false;pending.delete(i);elapsed+=t.ms;t.fn();return true;}};}
 test('速度・停止・複数の閲覧理由を変えてもタイマーは1本、古いコールバックは無効',()=>{
  const f=fake();let ticks=0;const p=new Playback({tick:()=>ticks++,delay:v=>1800/v,schedule:f.schedule,cancel:f.cancel});p.play();const old=f.old[0];p.setSpeed(2);assert.equal(f.pending.size,1);old();assert.equal(ticks,0);f.next();assert.equal(ticks,1);p.block('details',true);p.block('modal',true);assert.equal(f.pending.size,0);p.block('details',false);assert.equal(f.pending.size,0);p.pause();p.block('modal',false);assert.equal(f.pending.size,0);p.play();f.next();assert.equal(ticks,2);p.block('decision',true);for(const callback of f.old)callback();assert.equal(ticks,2);p.dispose();

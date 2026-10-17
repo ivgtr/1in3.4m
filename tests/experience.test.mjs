@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-import {createEncounter} from '../dist/encounter.js';
-import {create,startLife,evolveCompany,prepareTimeline,registerDecision,requestStrategy,requestHelp,autoDecision,autoCanChoose,availableDecisionOptions,orderBudget,tickMonth,continueLife,restore,currentLeader} from '../dist/model.js';
-const config=JSON.parse(fs.readFileSync(new URL('../dist/model-data.json',import.meta.url)));
+import {createEncounter} from '../src/domain/encounter.js';
+import {create,startLife,evolveCompany,prepareTimeline,registerDecision,requestStrategy,requestHelp,autoDecision,autoCanChoose,availableDecisionOptions,orderBudget,tickMonth,continueLife,restore,currentLeader} from '../src/domain/model.js';
+const config=JSON.parse(fs.readFileSync(new URL('../src/domain/model-data.json',import.meta.url)));
 const fresh=(seed=1)=>{const s=prepareTimeline(evolveCompany(startLife(create(seed,'比較',config,'independent'))));s.pending=null;return s;};
 function offer(s,value=271){s.pending={id:'offer',type:'large',at:s.q+1,entityId:s.clients[0].id,title:'追加案件',text:'',value,duration:2,causes:[],options:[{id:'hire',title:'採用',cost:35},{id:'partner',title:'外注',cost:0},{id:'decline',title:'見送る',cost:0}]};return prepareTimeline(s);}
 test('余力があれば現体制で受注でき、積み残し・同月登録済み案件・事故を余力に含める',()=>{

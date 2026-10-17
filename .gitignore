@@ -7,3 +7,5 @@ Thumbs.db
 *.log
 coverage/
 .openai/
+dist/
+validation/

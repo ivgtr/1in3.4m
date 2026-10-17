@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-import {create,startLife,prepareTimeline,tickMonth,registerDecision,setPolicy,requestHelp,requestExit,continueLife,restore,receivables} from '../dist/model.js';
-import {cyberTrial,monthlyHazard,annualRecruitOutcome} from '../dist/evidence.js';
-const config=JSON.parse(fs.readFileSync(new URL('../dist/model-data.json',import.meta.url)));
+import {create,startLife,prepareTimeline,tickMonth,registerDecision,setPolicy,requestHelp,requestExit,continueLife,restore,receivables} from '../src/domain/model.js';
+import {cyberTrial,monthlyHazard,annualRecruitOutcome} from '../src/domain/evidence.js';
+const config=JSON.parse(fs.readFileSync(new URL('../src/domain/model-data.json',import.meta.url)));
 const fresh=(seed=1)=>{const s=prepareTimeline(startLife(create(seed,'検証',config,'independent')));s.pending=null;s.scannedQuarter=s.q;s.cash=100000;return s;};
 const option=s=>{const opts=s.pending.options.filter(a=>(a.cost<=Math.max(0,s.cash)||s.pending.type==='cyber')&&(!['hire','welcome','recruit'].includes(a.id)||!s.threads.some(t=>['join','recruit','annualRecruit'].includes(t.type))));return opts.find(a=>['restore','collect','rescueLoan','relieve','maintenance','companion','trial','partner','wait','delegate'].includes(a.id))||opts.at(-1);};
 function until(s,m,{saved=false}={}){let guard=0;while(!s.ended&&s.calendarMonth<m&&guard++<1000){s=s.pending?registerDecision(s,option(s).id):s.checkpoint?continueLife(s):tickMonth(s);if(saved)s=restore(JSON.stringify(s));}assert.ok(guard<1000);return s;}

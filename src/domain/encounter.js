@@ -1,4 +1,4 @@
-import {create,rng} from './model.js?v=0.9.1';
+import {create,rng} from './model.js';
 // Fictional casting and correlated circumstances, not a population estimate.
 export function createEncounter(seed,name,base,originId){
  let config=structuredClone(base),recipe=config.encounter;
