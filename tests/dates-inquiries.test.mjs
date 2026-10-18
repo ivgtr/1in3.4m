@@ -1,8 +1,8 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-import {create,prepareTimeline,registerDecision,tickMonth,restore} from '../dist/model.js';
-import {decisionMonth,personJoinedMonth,personLeftMonth,clientSinceMonth} from '../dist/dates.js';
-import {REAL_MOMENTS,momentAssignments} from '../dist/insights.js';
-const config=JSON.parse(fs.readFileSync(new URL('../dist/model-data.json',import.meta.url)));
+import {create,prepareTimeline,registerDecision,tickMonth,restore} from '../src/domain/model.js';
+import {decisionMonth,personJoinedMonth,personLeftMonth,clientSinceMonth} from '../src/domain/dates.js';
+import {REAL_MOMENTS,momentAssignments} from '../src/domain/insights.js';
+const config=JSON.parse(fs.readFileSync(new URL('../src/domain/model-data.json',import.meta.url)));
 test('0.6保存済みの判断・入退社・取引をイベントの実月に揃える',()=>{
  const s={events:[{id:'choice',month:4,entities:[]},{id:'join',month:6,entities:['p']},{id:'left',month:10,kind:'risk',topic:'people',entities:['p'],title:'別々の道'},{id:'contract',month:7,kind:'turning',topic:'client',entities:['c']} ]};
  assert.equal(decisionMonth(s,{q:1,eventId:'choice'}),4);assert.equal(personJoinedMonth(s,{id:'p',joined:1,joinEvent:'join'}),6);assert.equal(personLeftMonth(s,{id:'p',left:3}),10);assert.equal(clientSinceMonth(s,{id:'c',since:2}),7);

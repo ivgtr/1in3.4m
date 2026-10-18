@@ -1,0 +1,39 @@
+@layer components {
+  .guidance {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    font-size: 14px;
+    overflow-wrap: anywhere;
+  }
+  .content {
+    flex: 1;
+    min-width: 0;
+  }
+  .title {
+    display: block;
+    margin-bottom: var(--space-1);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .content > p + p {
+    margin-top: var(--space-2);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+  .error {
+    border-color: var(--warm);
+    background: var(--warm-soft);
+  }
+  .error .title {
+    color: var(--warm);
+  }
+}

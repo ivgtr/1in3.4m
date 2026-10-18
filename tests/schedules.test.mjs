@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {schedules,changedSchedules} from '../dist/schedules.js';
+import {schedules,changedSchedules} from '../src/domain/schedules.js';
 const base=()=>({clients:[{id:'c',name:'丸山'}],contracts:[],threads:[],life:{recoveries:[]}});
 test('試作の契約終了と入社予定を通常画面と同じ予定として返す',()=>{const before=base(),after=structuredClone(before);after.contracts.push({id:'trial',clientId:'c',kind:'trial',active:true,end:1,value:180});after.threads.push({id:'join',type:'join',name:'加藤',dueMonth:4});const added=changedSchedules(before,after);assert.deepEqual(added,schedules(after));assert.deepEqual(added.map(r=>r.month),[3,4]);assert.match(added[0].label,/丸山の試作/);assert.deepEqual(changedSchedules(after,structuredClone(after)),[]);});
 test('2度目の復旧を事故IDで区別し、既存の復旧延長も結果へ出す',()=>{const before=base();before.life.recoveries.push({incidentId:'one',start:1,due:4,loss:1});const after=structuredClone(before);after.life.recoveries.push({incidentId:'two',start:2,due:3,loss:.05});let rows=changedSchedules(before,after);assert.equal(rows.length,1);assert.equal(rows[0].key,'recovery:two');assert.equal(schedules(after).length,2);after.life.recoveries[0].due=6;rows=changedSchedules(before,after);assert.equal(rows.length,2);assert.equal(rows[0].month,6);});

@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-import {create,prepareTimeline,registerDecision,tickMonth,requestHelp,restore} from '../dist/model.js';
-const config=JSON.parse(fs.readFileSync(new URL('../dist/model-data.json',import.meta.url)));
+import {create,prepareTimeline,registerDecision,tickMonth,requestHelp,restore} from '../src/domain/model.js';
+const config=JSON.parse(fs.readFileSync(new URL('../src/domain/model-data.json',import.meta.url)));
 test('同じ月に受注調整・外注・採用を登録でき、費用は一度だけ支払い、入社は3か月後',()=>{
  let s=prepareTimeline(create(10,'並行',config,'independent'));s.pending=null;s.cash=5000;s.last.load=2;s.backlog=200;s.config.parameters.hireChance=1;
  const before=s.cash;for(const id of ['adjust','bridge','recruit']){s=requestHelp(s,'workload');s=registerDecision(s,id);assert.equal(s.calendarMonth,0);assert.equal(s.q,0);assert.equal(s.history.length,0);}
