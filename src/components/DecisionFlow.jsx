@@ -1,8 +1,9 @@
+import { PlaybackAction, ProgressStatus } from './PlaybackControls.jsx';
 import { Progress } from './Progress.jsx';
 import styles from './DecisionFlow.module.css';
 import shared from './shared.module.css';
-import React, { useEffect, useMemo, useState } from 'react';
-import { availableDecisionOptions, costs, orderBudget, previewAutoChoice, receivables, staff } from '../domain/model.js';
+import React, { useEffect, useState } from 'react';
+import { availableDecisionOptions, costs, orderBudget, receivables, staff } from '../domain/model.js';
 import { discoveryAssignments } from '../domain/daily-view.js';
 import { isLightChoice } from '../domain/interaction.js';
 import { useGame } from '../game/GameContext.jsx';
@@ -40,27 +41,21 @@ function Receipt({ state }) {
 
 export function DecisionFlow() {
   const game = useGame();
-  const { state, preferences, clock, actions, autoReady } = game;
+  const { state, clock, actions, progress } = game;
   const decision = state?.pending;
   const receipt = state?.decisionReceipt;
   const [selected, setSelected] = useState(null);
   useEffect(() => { setSelected(null); }, [decision?.id, receipt?.eventId]);
-  const planned = useMemo(() => autoReady && !receipt ? previewAutoChoice(state, preferences.auto) : null, [state, preferences?.auto, autoReady, receipt]);
   if (!decision && !receipt) return null;
   const options = receipt ? [] : availableDecisionOptions(state);
   const chosen = options.find(option => option.id === selected);
-  const canAuto = receipt ? receipt.automatic : autoReady;
-  const paused = !clock.wanted;
-  const status = receipt
-    ? receipt.automatic ? (clock.running ? '結果を表示中 · まもなく日常へ' : '結果表示を一時停止 · 再開できます') : '結果確認中 · 続けると再開'
-    : autoReady ? (clock.running ? `まもなく「${planned.title}」を選びます` : '自動判断は一時停止 · 自分で選ぶか再開') : 'あなたの選択待ち · 選ぶまで時間は停止';
+  const canAuto = progress.automatic;
   const pauseForInteraction = () => { if (canAuto && clock.running) actions.pause(); };
   const discovery = !receipt && ['hiring', 'workload', 'large'].includes(decision.type) && decision.options.some(option => ['hire', 'welcome', 'recruit'].includes(option.id)) && !state.decisions.some(item => ['hire', 'welcome', 'recruit'].includes(item.choiceId)) ? 'hiring' : !receipt && decision.type === 'successor' && state.life.generations.length === 1 ? 'succession' : null;
-  return <Dialog open={!!receipt || !state.decisionHeld} title={receipt ? receipt.action : decision.title} subtitle={receipt ? '選択の結果' : `相談 · ${dateAt(state.calendarMonth)}`} size="wide" dismissible={false} onInteract={pauseForInteraction} headerActions={<>
+  return <Dialog notification={game.dialogs.length === 0 && (!!receipt || !state.decisionHeld) ? <Notification /> : null} open={!!receipt || !state.decisionHeld} title={receipt ? receipt.action : decision.title} subtitle={receipt ? '選択の結果' : `相談 · ${dateAt(state.calendarMonth)}`} size="wide" dismissible={false} onInteract={pauseForInteraction} headerActions={<>
     {!receipt && <Button onClick={actions.hold}>いったん畳んで会社を見る</Button>}
-    {canAuto && <Button data-keep-playing onClick={actions.toggle}>{paused ? '再開' : '一時停止'}</Button>}
-  </>} footer={<div className={styles['decision-footer']}><div className={styles['decision-status']}><p role="status">{status}</p>{canAuto && <Progress clock={clock} label={receipt ? '結果の表示時間' : '自動判断までの経過'} />}</div>{receipt ? <Button className={styles.primary} variant="primary" onClick={actions.finishResult}>{state.ended || state.suspended ? '結果を確認する' : state.pending ? '次の相談へ' : '続ける'}</Button> : <Button className={styles.primary} variant="primary" disabled={!chosen} onClick={() => actions.decide(selected)}>{chosen ? `${chosen.title} · 確定` : '対応を選んでください'}</Button>}</div>}>
-    {game.dialogs.length === 0 && (!!receipt || !state.decisionHeld) && <Notification />}
+    {canAuto && <PlaybackAction variant="secondary" />}
+  </>} footer={<div className={styles['decision-footer']}><div className={styles['decision-status']}><ProgressStatus />{canAuto && <Progress clock={clock} label={receipt ? '結果の表示時間' : '自動判断までの経過'} />}</div>{receipt ? <Button className={styles.primary} variant="primary" onClick={actions.finishResult}>{progress.completionLabel}</Button> : <Button className={styles.primary} variant="primary" disabled={!chosen} onClick={() => actions.decide(selected)}>{chosen ? `${chosen.title} · 確定` : '対応を選んでください'}</Button>}</div>}>
     {receipt ? <Receipt state={state} /> : <>
       <p>{displayText(decision.text.length > 140 ? decision.text.split('。')[0] + '。' : decision.text)}</p>
       <DecisionContext state={state} decision={decision} />

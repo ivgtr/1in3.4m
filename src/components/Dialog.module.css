@@ -25,7 +25,7 @@
   }
   .dialog-shell {
     display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
     max-height: calc(100dvh - 50px);
   }
   .dialog-header {
@@ -70,6 +70,16 @@
     font-size: 19px;
     margin-left: var(--space-1);
   }
+  .dialog-notification {
+    min-height: 0;
+    max-height: 30dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .dialog-notification:not(:empty) {
+    padding: var(--space-3) var(--space-6);
+    border-bottom: 1px solid var(--line);
+  }
   .dialog-body {
     min-height: 0;
     overflow-y: auto;
@@ -112,6 +122,9 @@
     .dialog-header-actions button {
       font-size: 11px;
       padding-inline: var(--space-2);
+    }
+    .dialog-notification:not(:empty) {
+      padding: var(--space-2) var(--space-4);
     }
     .dialog-body {
       padding: var(--space-4);

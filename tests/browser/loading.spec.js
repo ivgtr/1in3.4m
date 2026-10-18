@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { createEncounter } from '../../src/domain/encounter.js';
-import { autoDecision, continueLife, evolveCompany, prepareTimeline, registerDecision, requestExit, startLife, tickMonth } from '../../src/domain/model.js';
+import { autoDecision, continueLife, evolveCompany, prepareTimeline, registerDecision, requestExit, requestHelp, startLife, tickMonth } from '../../src/domain/model.js';
 import { SAVE_KEY, PREFS_KEY } from '../../src/game/session-storage.js';
 
 const config = JSON.parse(readFileSync(new URL('../../src/domain/model-data.json', import.meta.url)));
@@ -19,6 +19,16 @@ async function seed(page, raw = saved, auto = 'manual') {
     localStorage.setItem(saveKey, raw);
     localStorage.setItem(prefsKey, JSON.stringify({ speed: 2, auto }));
   }, { raw, auto, saveKey: SAVE_KEY, prefsKey: PREFS_KEY });
+}
+
+function fiveYearCompany() {
+  let mature = prepareTimeline(evolveCompany(startLife(createEncounter(1, '五年の会社', config))));
+  for (let turns = 0; mature.calendarMonth < 60 && !mature.ended && turns < 500; turns++) {
+    mature = mature.pending ? autoDecision(mature, 'all') : mature.checkpoint ? continueLife(mature) : tickMonth(mature);
+  }
+  expect(mature.calendarMonth).toBe(60);
+  mature = continueLife(mature);
+  return mature;
 }
 
 test('cold routes defer the runtime; start, hold, navigation and reload preserve one company', async ({ page }) => {
@@ -126,12 +136,7 @@ test('a nested menu failure can be closed on a narrow screen with focus restored
 });
 
 test('five-year diary, feature menus and the final record load through their production boundaries', async ({ page }) => {
-  let mature = prepareTimeline(evolveCompany(startLife(createEncounter(1, '五年の会社', config))));
-  for (let turns = 0; mature.calendarMonth < 60 && !mature.ended && turns < 500; turns++) {
-    mature = mature.pending ? autoDecision(mature, 'all') : mature.checkpoint ? continueLife(mature) : tickMonth(mature);
-  }
-  expect(mature.calendarMonth).toBe(60);
-  mature = continueLife(mature);
+  const mature = fiveYearCompany();
   await seed(page, JSON.stringify(mature));
   await page.reload();
   await expect(page.getByRole('heading', { name: '会社の日誌', exact: true })).toBeVisible();
@@ -156,3 +161,112 @@ test('five-year diary, feature menus and the final record load through their pro
   expect(await readSave(page)).toBe(JSON.stringify(ended));
   await expect(page.getByRole('alert')).toHaveCount(0);
 });
+
+for (const viewport of [{ width: 1280, height: 800 }, { width: 375, height: 667 }]) {
+  test(`reading guidance preserves the diary and prioritizes a held decision at ${viewport.width}px`, async ({ page }, testInfo) => {
+    await page.setViewportSize(viewport);
+    const held = { ...requestHelp(fiveYearCompany(), 'workload'), decisionHeld: true };
+    const raw = JSON.stringify(held);
+    await seed(page, raw);
+    await page.reload();
+    const controls = page.getByRole('region', { name: '時間と見守り方' });
+    const feed = page.getByLabel('直近5年分の会社の日誌・新しい月から', { exact: true });
+    const latest = page.getByRole('button', { name: '最新へ戻る', exact: true });
+    await expect(latest).toBeDisabled();
+    const originalTop = await feed.evaluate(node => node.getBoundingClientRect().top + window.scrollY);
+    await feed.focus();
+    await feed.press('PageDown');
+    await expect.poll(() => feed.evaluate(node => node.scrollTop)).toBeGreaterThan(40);
+    await expect(controls.getByRole('status')).toHaveText('相談を保留中 · 履歴を閲覧中 · 時間は停止中');
+    await expect(page.getByRole('button', { name: '相談に戻る', exact: true })).toHaveCount(1);
+    await expect(page.getByRole('button', { name: '▶ 最新から再開', exact: true })).toHaveCount(0);
+    expect(await feed.evaluate(node => node.getBoundingClientRect().top + window.scrollY)).toBe(originalTop);
+    expect(await readSave(page)).toBe(raw);
+    await latest.click();
+    await expect.poll(() => feed.evaluate(node => node.scrollTop)).toBe(0);
+    await expect(controls.getByRole('status')).toHaveText('相談を保留中 · 時間は停止中');
+    await expect(latest).toBeDisabled();
+    expect(await readSave(page)).toBe(raw);
+    await controls.getByRole('button', { name: '相談に戻る', exact: true }).click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await expect(page.getByRole('dialog').getByRole('status')).toHaveText('あなたの選択待ち · 選ぶまで時間は停止');
+    await page.screenshot({ path: testInfo.outputPath('held-decision.png') });
+
+    // Without a held decision, returning to latest stays paused; resuming clears reading.
+    const ordinary = fiveYearCompany();
+    await page.evaluate(({ key, raw }) => localStorage.setItem(key, raw), { key: SAVE_KEY, raw: JSON.stringify(ordinary) });
+    await page.reload();
+    await expect(feed).toBeVisible();
+    await feed.focus();
+    await feed.press('PageDown');
+    await expect(controls.getByRole('status')).toHaveText('履歴を閲覧中 · 時間は停止中');
+    await latest.click();
+    await expect(controls.getByRole('status')).toHaveText('一時停止');
+    await feed.focus();
+    await feed.press('PageDown');
+    await controls.getByRole('button', { name: '▶ 最新から再開', exact: true }).click();
+    await expect(controls.getByRole('status')).toHaveText('進行中');
+    await expect(latest).toBeDisabled();
+    await expect.poll(() => feed.evaluate(node => node.scrollTop)).toBe(0);
+    await controls.getByRole('button', { name: 'Ⅱ 停止', exact: true }).click();
+    await expect(controls.getByRole('status')).toHaveText('一時停止');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.screenshot({ path: testInfo.outputPath('diary-controls.png'), fullPage: true });
+  });
+
+  test(`notifications stay visible outside scrolling content at ${viewport.width}px`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await seed(page);
+    await page.reload();
+    await page.getByRole('button', { name: 'いったん畳んで会社を見る' }).click();
+    const heading = page.getByRole('link', { name: 'すべての記録を読む' });
+    const before = await heading.boundingBox();
+    await page.evaluate(() => localStorage.setItem('company-life-archives-v1', '{'));
+    await page.getByRole('button', { name: '会社のこと', exact: true }).click();
+    await page.getByRole('button', { name: '保存した会社', exact: true }).click();
+    const archives = page.getByRole('dialog', { name: '保存した会社', exact: true });
+    await expect(archives.getByRole('alert')).toBeVisible();
+    await archives.getByRole('button', { name: '閉じる', exact: true }).click();
+    const menu = page.getByRole('dialog', { name: '会社のこと', exact: true });
+    const alert = menu.getByRole('alert');
+    const position = await alert.boundingBox();
+    await menu.getByRole('button', { name: '保存した会社', exact: true }).scrollIntoViewIfNeeded();
+    await expect(alert).toBeInViewport();
+    expect((await alert.boundingBox()).y).toBe(position.y);
+    await menu.getByRole('button', { name: '閉じる', exact: true }).click();
+    expect((await heading.boundingBox()).y).toBe(before.y);
+    const floating = page.getByRole('alert');
+    await expect(floating).toBeInViewport();
+    const box = await floating.boundingBox();
+    expect(box.y).toBeGreaterThan(viewport.height / 2);
+    if (viewport.width > 700) expect(box.x).toBeGreaterThan(viewport.width / 2);
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await expect(floating).toBeInViewport();
+    expect((await floating.boundingBox()).y).toBe(box.y);
+    await page.getByRole('region', { name: '時間と見守り方' }).getByRole('button', { name: '相談に戻る', exact: true }).click();
+    const decision = page.getByRole('dialog');
+    await expect(decision.getByRole('alert')).toBeInViewport();
+    const decisionPosition = await decision.getByRole('alert').boundingBox();
+    await decision.getByRole('group', { name: '対応を選ぶ' }).locator('button').last().scrollIntoViewIfNeeded();
+    expect((await decision.getByRole('alert').boundingBox()).y).toBe(decisionPosition.y);
+    await expect(decision.getByRole('button', { name: '対応を選んでください', exact: true })).toBeInViewport();
+    await decision.getByRole('button', { name: '通知を閉じる' }).click();
+    await expect(page.getByRole('alert')).toHaveCount(0);
+
+    // An error while ordinary playback is stopped must not move the diary either.
+    await page.evaluate(({ key, raw }) => localStorage.setItem(key, raw), { key: SAVE_KEY, raw: JSON.stringify(fiveYearCompany()) });
+    await page.reload();
+    const diaryHeading = page.getByRole('heading', { name: '会社の日誌', exact: true });
+    await expect(diaryHeading).toBeVisible();
+    const diaryTop = await diaryHeading.evaluate(node => node.getBoundingClientRect().top + window.scrollY);
+    await page.getByRole('button', { name: '会社のこと', exact: true }).click();
+    await page.getByRole('button', { name: '保存した会社', exact: true }).click();
+    await expect(archives.getByRole('alert')).toBeVisible();
+    await archives.getByRole('button', { name: '閉じる', exact: true }).click();
+    await menu.getByRole('button', { name: '閉じる', exact: true }).click();
+    await expect(page.getByRole('button', { name: '▶ 再生', exact: true })).toBeDisabled();
+    expect(await diaryHeading.evaluate(node => node.getBoundingClientRect().top + window.scrollY)).toBe(diaryTop);
+    await page.getByRole('button', { name: '通知を閉じる' }).click();
+    await expect(page.getByRole('button', { name: '▶ 再生', exact: true })).toBeEnabled();
+  });
+}

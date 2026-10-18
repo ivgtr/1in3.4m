@@ -8,7 +8,7 @@ import { SuccessionEvidence } from './SuccessionEvidence.jsx';
 
 export function EvidenceGuide() {
   return <div>
-    <p className={shared['notice']}>架空の小さな開発会社のシミュレーションです。実測は調査対象の観測値、推計は別の期間・条件への変換、仮定は未測定のゲーム設計を表します。</p>
+    <p className={shared['note']}>架空の小さな開発会社のシミュレーションです。実測は調査対象の観測値、推計は別の期間・条件への変換、仮定は未測定のゲーム設計を表します。</p>
     <section className={shared['detail-section']}>
       <h3>見守り、ときどき決める</h3>
       <p>1期は3か月。月ごとに採用・交渉などの結果が届き、四半期に納品・入金・会計を集計します。相談を選ぶだけでは年月は進みません。</p>

@@ -22,7 +22,7 @@ export function ScheduleList({ state, compact = false }) {
     {renderRows(compact ? rows.slice(0, 3) : rows)}
     {compact && rows.length > 3 && <details><summary>ほか{rows.length - 3}件の予定</summary>{renderRows(rows.slice(3))}</details>}
     {receivables(state) > 0 && <p className={shared['note']}>入金待ち {money(receivables(state))}</p>}
-    {!rows.length && !receivables(state) && <p className={shared['note']}>期限付きの予定はありません。</p>}
+    {!rows.length && !receivables(state) && <p className={shared.empty}>期限付きの予定はありません。</p>}
   </section>;
 }
 
@@ -62,14 +62,14 @@ export function CompanyStatus({ state, onOpen, onHelp }) {
         <span className={styles['name-mark']} aria-hidden="true">{person.name.slice(0, 1)}</span>
         <div><strong>{person.name}</strong><small>{person.founding ? '創業から一緒' : `${dateAt(personJoinedMonth(state, person))}に入社`}</small><small>{personCondition(person).text}</small></div>
       </article>)}
-      {!team.length && <p className={shared['note']}>今は、経営者ひとりで会社を回しています。</p>}
+      {!team.length && <p className={shared.empty}>今は、経営者ひとりで会社を回しています。</p>}
       {team.length > 2 && <p className={shared['note']}>ほか{team.length - 2}人が在籍</p>}
       <h3>今の取引</h3>
       {clients.slice(0, 2).map(client => <article className={styles['person-card']} key={client.id}>
         <span className={styles['name-mark']} aria-hidden="true">{client.name.slice(0, 1)}</span>
         <div><strong>{client.name}</strong><small>基準受注 {money(clientWork(state, client))} / 期</small></div>
       </article>)}
-      {!clients.length && <p className={shared['note']}>継続顧客は、まだいません。</p>}
+      {!clients.length && <p className={shared.empty}>継続顧客は、まだいません。</p>}
       {clients.length > 2 && <p className={shared['note']}>ほか{clients.length - 2}社との取引が継続中</p>}
       <Button onClick={() => onOpen('people')}>人と取引をすべて見る</Button>
     </section>

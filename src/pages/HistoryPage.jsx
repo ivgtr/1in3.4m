@@ -9,5 +9,5 @@ const CompanyHistoryPage = lazy(() => import('./CompanyHistoryPage.jsx').then(mo
 export function HistoryPage() {
   const { active } = useSession();
   if (active) return <GameViewBoundary label="全日誌"><CompanyHistoryPage /></GameViewBoundary>;
-  return <main className={shared.page}><div className={shared['button-row']}><Link to="/">会社へ戻る</Link></div><h1>この会社が、歩いてきたこと</h1><p>まだ会社の記録はありません。</p></main>;
+  return <main className={shared.page}><div className={shared['button-row']}><Link to="/">会社へ戻る</Link></div><h1>この会社が、歩いてきたこと</h1><p className={shared.empty}>まだ会社の記録はありません。</p></main>;
 }

@@ -5,6 +5,7 @@ import { Button } from './Button.jsx';
 import { money, dateAt, monthNow, displayText } from '../game/format.js';
 import { eventDigest, eventSummary, discoveryAssignments, diaryMonths } from '../domain/daily-view.js';
 import { personLeftMonth } from '../domain/dates.js';
+import { historyReadIntent } from '../domain/view-state.js';
 import { Discovery } from './Discovery.jsx';
 
 function EventRecord({ state, event, onEvent, dated = true }) {
@@ -50,7 +51,7 @@ function diaryRecords(state, fromMonth) {
   return records.sort((a, b) => b.month - a.month || a.order - b.order);
 }
 
-export function Diary({ state, all = false, onReading, onEvent, feedRef }) {
+export function Diary({ state, all = false, onReading, onEvent, feedRef, reading = false, onLatest }) {
   const userScroll = useRef(false);
   const now = monthNow(state);
   const fromMonth = all ? 0 : Math.max(0, now - 59);
@@ -58,19 +59,22 @@ export function Diary({ state, all = false, onReading, onEvent, feedRef }) {
   const assignments = discoveryAssignments(state);
   const markIntent = () => { userScroll.current = true; };
   const handleScroll = event => {
-    if (userScroll.current && event.currentTarget.scrollTop > 40) onReading?.();
-    userScroll.current = false;
+    if (historyReadIntent({ intent: userScroll.current, top: event.currentTarget.scrollTop })) {
+      onReading?.();
+      userScroll.current = false;
+    }
   };
   const handleDetails = event => {
     if (event.target.closest('summary')) onReading?.();
   };
   return <section className={`${styles['diary']} ${all ? styles['all-history'] : ''}`}>
-    <div className={styles['diary-heading']}><h2>{all ? '創業からの全日誌' : '会社の日誌'}</h2><span>{all ? '全期間' : '直近5年分'} · 新しい月から</span></div>
+    <div className={styles['diary-heading']}><h2>{all ? '創業からの全日誌' : '会社の日誌'}</h2><span>{all ? '全期間' : '直近5年分'} · 新しい月から</span>{onLatest && <Button onClick={onLatest} disabled={!reading}>最新へ戻る</Button>}</div>
     {!all && <p className={shared['note']}>{now >= 60 && `${dateAt(fromMonth)}以降を表示。`}全期間の記録は振り返りに残ります。</p>}
     <div className={`${shared['status-line']} ${styles['status-line']}`}><span>{dateAt(now)}</span>{!state.ended && <span>次の決算まで{3 - now % 3}か月</span>}</div>
     <div className={styles['diary-feed']} ref={feedRef} tabIndex={0} aria-label={`${all ? '全期間' : '直近5年分'}の会社の日誌・新しい月から`}
       onWheel={markIntent} onTouchMove={markIntent} onPointerDown={markIntent}
       onKeyDown={event => { if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) markIntent(); }}
+      onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) userScroll.current = false; }}
       onScroll={handleScroll} onClickCapture={handleDetails}>
       {diaryMonths(records).map(group => <section className={styles['diary-month']} key={group.month}>
         <h3>{dateAt(group.month)}{group.month === now && <span className={`${shared['source-tag']} ${styles['source-tag']}`}>今月</span>}</h3>
@@ -81,7 +85,7 @@ export function Diary({ state, all = false, onReading, onEvent, feedRef }) {
           {record.type === 'anniversary' && <div className={styles['diary-event']}><p className={styles['event-title']}>創業{record.month / 12}年。直近1年間に会社を離れた仲間は{record.departures}人。</p><p className={shared['note']}>{dateAt(record.month - 12)}から{dateAt(record.month)}までの、この会社の記録です。</p><Discovery kind="departures" state={state} /></div>}
         </React.Fragment>)}
       </section>)}
-      {!records.length && <p className={shared['note']}>この先の出来事が、ここに残ります。</p>}
+      {!records.length && <p className={shared.empty}>この先の出来事が、ここに残ります。</p>}
     </div>
   </section>;
 }

@@ -1,5 +1,6 @@
 import React, { lazy, Suspense, useState } from 'react';
 import { Outlet } from '@tanstack/react-router';
+import { Guidance } from './components/Guidance.jsx';
 import { AppFrame } from './components/AppFrame.jsx';
 import { SessionError } from './components/SessionError.jsx';
 import { ErrorBoundary } from './components/ErrorBoundary.jsx';
@@ -24,7 +25,7 @@ export function AppLayout() {
   return <SessionContext.Provider value={{ active: intent !== null, start }}>
     {intent === null ? <AppFrame><Outlet /></AppFrame> :
       <ErrorBoundary fallback={error => <SessionError message={`ゲームを読み込めません。${error.message}`} />}>
-        <Suspense fallback={<AppFrame><main className={shared.page}><p role="status">会社を読み込み中…</p></main></AppFrame>}>
+        <Suspense fallback={<AppFrame><main className={shared.page}><Guidance><p role="status">会社を読み込み中…</p></Guidance></main></AppFrame>}>
           <GameRuntime startup={initial.startup} intent={intent} />
         </Suspense>
       </ErrorBoundary>}

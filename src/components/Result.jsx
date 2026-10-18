@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './CompanyViews.module.css';
 import shared from './shared.module.css';
+import { Guidance } from './Guidance.jsx';
 import { Button } from './Button.jsx';
 import { num, money, dateAt, monthNow } from '../game/format.js';
 import { staff, activeClients } from '../domain/model.js';
@@ -46,7 +47,7 @@ export function Result({ state, onContinue, onNew, onExport, onEvent }) {
     <p className={shared['eyebrow']}>{state.name} · {monthNow(state)}か月の記録</p>
     <h1>{endingTitle(state)}</h1>
     <div className={styles['metrics']}><div className={styles['metric']}><span>人数の変化</span><strong>{state.initial.staff + 1} → {staff(state) + 1}人</strong></div><div className={styles['metric']}><span>区切り時点の取引</span><strong>{activeClients(state).length}社</strong></div><div className={styles['metric']}><span>手元資金</span><strong>{money(state.cash)}</strong></div></div>
-    {canContinue && <div className={shared['notice']}><p>ここまでの記録を残し、次の月から経営を続けられます。</p><Button variant="primary" onClick={onContinue}>この会社を続ける</Button></div>}
+    {canContinue && <Guidance title="経営を続けられます" actions={<Button variant="primary" onClick={onContinue}>この会社を続ける</Button>}><p>ここまでの記録を残し、次の月から経営を続けられます。</p></Guidance>}
     <section className={shared['detail-section']}><h2>この会社が経験したこと</h2><p>年間採用計画の結果 {life.recruitHistory.length}件 · 計画未達 {life.recruitHistory.filter(plan => plan.filled < plan.planned).length}件</p><p>インシデント {life.incidents.length}件 · 影響なし {life.incidents.filter(incident => incident.noImpact).length}件</p><p className={shared['note']}>1社の経歴です。調査の年率と直接比べる割合ではありません。採用計画の集計月と、実際の入社月は別に記録しています。</p></section>
     <ScheduleList state={state} />
     {state.backlog > 0 && <p>納めきれていない仕事 {money(state.backlog)}分</p>}

@@ -27,14 +27,14 @@ export function People({ state, onEvent, onContact }) {
         <p className={shared['note']}>一緒に働いた期間 {Math.max(0, monthNow(state) - personJoinedMonth(state, person))}か月 · 仕事量の多かった期間 {person.overloadPeriods * 3}か月</p>
         {person.joinEvent && <Button className={shared['text-button']} onClick={() => onEvent(person.joinEvent)}>入社した日の記録</Button>}
       </div></article>)}
-      {!team.length && <p>今は、経営者ひとりで会社を回しています。</p>}
+      {!team.length && <p className={shared.empty}>今は、経営者ひとりで会社を回しています。</p>}
     </div></section>
     {departed.length > 0 && <section className={shared['detail-section']}><h3>別の道へ進んだ仲間</h3><div className={styles['people-list']}>{departed.map(person => <article className={shared['relationship-card']} key={person.id}><strong>{person.name}</strong><p>{dateAt(personJoinedMonth(state, person))}から{dateAt(personLeftMonth(state, person))}まで。</p><p>{displayText(person.leftReason)}</p></article>)}</div></section>}
     <section className={shared['detail-section']}><h3>取引先との関係</h3>{state.clients.map(client => <article className={shared['relationship-card']} key={client.id}>
       <strong>{client.name}</strong><span className={`${shared['source-tag']} ${styles['source-tag']}`}>{client.active ? '継続中' : '今回の取引は終了'}</span>
       <p>{clientSinceMonth(state, client) === 0 ? '創業時から' : `${dateAt(clientSinceMonth(state, client))}から`}のつながり{client.active && ` · 基準受注 ${money(clientWork(state, client))} / 期`}</p>
       {client.sourceEvent && <Button className={shared['text-button']} onClick={() => onEvent(client.sourceEvent)}>この関係のはじまり</Button>}
-    </article>)}{!state.clients.length && <p>継続顧客は、まだいません。</p>}</section>
+    </article>)}{!state.clients.length && <p className={shared.empty}>継続顧客は、まだいません。</p>}</section>
     {state.contacts.length > 0 && <details className={shared['detail-section']}><summary>相談した相手、つながらなかった話</summary>{state.contacts.map(contact => <p key={contact.id}><strong>{contact.name}</strong> · {contactLabels[contact.status]}</p>)}</details>}
     {state.life.family.length > 0 && <section className={shared['detail-section']}><h3>家族の後継候補</h3>{state.life.family.map(person => <p key={person.id}>{person.name} · {dateAt(person.registered)}に候補登録</p>)}<p className={shared['note']}>候補登録だけでは社長・人数・資金は変わりません。</p></section>}
   </div>;

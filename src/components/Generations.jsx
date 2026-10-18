@@ -10,7 +10,7 @@ export function Generations({ state }) {
   return <section className={shared['detail-section']}>
     <h3>会社と、歴代の経営者</h3>
     <p>会社：{life.companyStatus === 'closed' ? '事業終了' : life.companyStatus === 'integrated' ? '他社・新会社へ統合' : '継続'}{state.suspended && ' · 保存・中断中'}</p>
-    {life.epilogue && <section className={shared['notice']}><h4>引き継がれた事業の後日談</h4><p>{displayText(life.epilogue.text)}</p></section>}
+    {life.epilogue && <section className={shared['detail-section']}><h4>引き継がれた事業の後日談</h4><p>{displayText(life.epilogue.text)}</p></section>}
     {life.ownerProceeds !== undefined && <p>売却対価（経営者に帰属）：{money(life.ownerProceeds)}。会社の手元資金には加えていません。価格式は仮定です。</p>}
     <div className={styles['generation-list']}>{life.generations.map(generation => <article className={shared['relationship-card']} key={generation.number}>
       <h4>第{generation.number}代 · {generation.name}</h4>

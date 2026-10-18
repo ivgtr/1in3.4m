@@ -1,13 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import config from '../domain/model-data.json';
 import { createEncounter } from '../domain/encounter.js';
 import { Playback, displayDelay } from '../domain/playback.js';
 import {
   autoCanChoose, cancelHelp, contactCandidate, continueLife, evolveCompany, prepareTimeline,
-  registerFamily, requestExit, requestHelp, requestLeadership, requestStrategy, setPolicy, startLife, tickMonth,
+  previewAutoChoice, registerFamily, requestExit, requestHelp, requestLeadership, requestStrategy, setPolicy, startLife, tickMonth,
 } from '../domain/model.js';
 import { choose, readCompany } from './session.js';
 import { archiveCompany, PREFS_KEY, readArchives, readPreferences, readStartup, SAVE_KEY } from './session-storage.js';
+import { progressState } from '../domain/view-state.js';
 import { GameContext } from './GameContext.jsx';
 
 const randomSeed = () => crypto.getRandomValues(new Uint32Array(1))[0];
@@ -170,7 +171,6 @@ export function GameProvider({ children, startup, intent = 'resume' }) {
     changePreferences,
     pause: () => clock.pause(),
     play: () => { setReading(false); clock.play(); },
-    toggle: () => clock.wanted ? clock.pause() : (setReading(false), clock.play()),
     markReading: () => { setReading(true); clock.pause(); },
     latest: () => setReading(false),
     setRoutePaused,
@@ -241,5 +241,12 @@ export function GameProvider({ children, startup, intent = 'resume' }) {
     }),
   };
 
-  return <GameContext.Provider value={{ state, draft, preferences, initialError: initial.error, notification, reading, dialogs, actions, clock, autoReady: state && preferences ? autoReady(state, preferences.auto) : false }}>{children}</GameContext.Provider>;
+  const ready = !!state && !!preferences && autoReady(state, preferences.auto);
+  const plannedTitle = useMemo(() => ready && !state.decisionReceipt && !state.decisionHeld
+    ? previewAutoChoice(state, preferences.auto).title : undefined, [ready, state, preferences?.auto]);
+  const progress = progressState({
+    state, wanted: clock.wanted, running: clock.running, auto: ready, reading, error,
+    plannedTitle, blockedBy: [...clock.blocks],
+  });
+  return <GameContext.Provider value={{ state, draft, preferences, initialError: initial.error, notification, reading, dialogs, actions, clock, progress }}>{children}</GameContext.Provider>;
 }

@@ -2,9 +2,35 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {progressState,historyReadIntent} from '../src/domain/view-state.js';
 import {create,startLife,evolveCompany,prepareTimeline,autoCanChoose,autoDecision,requestHelp} from '../src/domain/model.js';
 import fs from 'node:fs';const config=JSON.parse(fs.readFileSync(new URL('../src/domain/model-data.json',import.meta.url)));
-test('停止中に自動選択の予告を出さず、実際の進行状態から一つの表示を選ぶ',()=>{
- const pending={pending:true,auto:true,remaining:6000};assert.equal(progressState(pending),'一時停止');assert.equal(progressState({...pending,wanted:true,running:true}),'おまかせで返答予定');assert.equal(progressState({...pending,wanted:true,running:false}),'一時停止');assert.equal(progressState({...pending,wanted:true,auto:false}),'あなたの選択待ち');assert.equal(progressState({...pending,wanted:false,reading:true}),'一時停止 · 履歴を閲覧中');
- assert.equal(historyReadIntent({intent:false,top:100}),false);assert.equal(historyReadIntent({intent:true,top:100}),true);assert.equal(historyReadIntent({intent:true,top:0}),false);
+test('進行案内は停止理由と利用できる操作を同じ状態から決める', () => {
+  const pending = { state: { pending: {} }, auto: true, wanted: false, running: false, plannedTitle: '見送り' };
+  assert.equal(progressState(pending).action, 'play');
+  assert.equal(progressState({ ...pending, wanted: true, running: true }).message, 'まもなく「見送り」を選びます');
+  assert.doesNotMatch(progressState({ ...pending, wanted: true, running: false }).message, /まもなく/);
+  assert.equal(progressState({ ...pending, auto: false }).action, null);
+  const held = progressState({ ...pending, state: { pending: {}, decisionHeld: true }, reading: true });
+  assert.equal(held.action, 'reopen');
+  assert.equal(held.label, '相談に戻る');
+  assert.match(held.message, /保留中.*閲覧中/);
+  assert.equal(held.canStep, false);
+  const reading = progressState({ state: {}, reading: true, wanted: false, running: false });
+  assert.equal(reading.action, 'play');
+  assert.equal(reading.label, '▶ 最新から再開');
+  const failure = progressState({ state: {}, reading: true, error: true });
+  assert.equal(failure.action, null);
+  assert.equal(failure.label, '▶ 再生');
+  assert.equal(failure.canStep, false);
+  assert.match(failure.message, /エラー/);
+  const blocked = progressState({ ...pending, wanted: true, blockedBy: ['modal'] });
+  assert.match(blocked.message, /メニューを表示中/);
+  assert.doesNotMatch(blocked.message, /まもなく/);
+  const receipt = { decisionReceipt: { automatic: false }, ended: 'voluntary' };
+  assert.doesNotMatch(progressState({ state: receipt }).message, /再開/);
+  assert.equal(progressState({ state: receipt }).completionLabel, '結果を確認する');
+  assert.equal(progressState({ state: { decisionReceipt: { automatic: true } }, wanted: false, running: false }).action, 'play');
+  assert.equal(historyReadIntent({ intent: false, top: 100 }), false);
+  assert.equal(historyReadIntent({ intent: true, top: 100 }), true);
+  assert.equal(historyReadIntent({ intent: true, top: 0 }), false);
 });
 test('確認付きオートは通常の資金相談・借入も止め、新規会社に移行説明を混ぜない',()=>{
  const fresh=()=>prepareTimeline(evolveCompany(startLife(create(5,'新規',config,'local'))));let s=fresh();assert.ok(!s.events.some(e=>e.text.includes('以後は0.8')||e.text.includes('過去は再計算')));

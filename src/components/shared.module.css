@@ -76,12 +76,10 @@
     color: var(--muted);
     font-size: 13px;
   }
-  .notice {
-    border: 1px solid #d8c4a5;
-    border-radius: var(--radius);
-    padding: var(--space-4);
-    background: var(--warm-soft);
-    font-size: 14px;
+  .empty {
+    padding-block: var(--space-3);
+    color: var(--muted);
+    font-size: 13px;
   }
   .warning {
     color: var(--warm);

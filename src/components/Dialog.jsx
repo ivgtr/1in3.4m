@@ -2,7 +2,7 @@ import React, { useEffect, useId, useRef } from 'react';
 import styles from './Dialog.module.css';
 import { Button } from './Button.jsx';
 
-export function Dialog({ open = true, title, subtitle, children, footer, onClose, size = 'medium', dismissible = true, onInteract, headerActions }) {
+export function Dialog({ open = true, title, subtitle, children, footer, onClose, size = 'medium', dismissible = true, onInteract, headerActions, notification }) {
   const dialogRef = useRef(null);
   const titleRef = useRef(null);
   const programmaticCloses = useRef(0);
@@ -61,6 +61,7 @@ export function Dialog({ open = true, title, subtitle, children, footer, onClose
             {dismissible && <Button variant="ghost" className={styles['dialog-close']} onClick={onClose} aria-label="閉じる">閉じる <span aria-hidden="true">×</span></Button>}
           </div>
         </header>
+        <div className={styles['dialog-notification']}>{notification}</div>
         <div className={styles['dialog-body']} onPointerDown={interact}>{children}</div>
         {footer && <footer className={styles['dialog-footer']}>{footer}</footer>}
       </div>
