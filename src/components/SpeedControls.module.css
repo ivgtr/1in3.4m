@@ -1,0 +1,42 @@
+@layer components {
+  .speed-switch {
+    display: inline-flex;
+    flex-shrink: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .speed-switch button {
+    min-width: 41px;
+    min-height: 42px;
+    padding: 7px 9px;
+    border: 0;
+    border-radius: 0;
+    font-size: 13px;
+    background: transparent;
+    font-variant-numeric: tabular-nums;
+  }
+  .speed-switch button + button {
+    border-left: 1px solid var(--line);
+  }
+  .speed-switch button:where(:hover:not(:disabled)) {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+  .speed-switch button[aria-pressed='true'] {
+    background: var(--accent);
+    color: var(--surface);
+    font-weight: 700;
+  }
+  .speed-switch button:focus-visible {
+    outline-offset: -3px;
+  }
+  @media (max-width: 700px) {
+    .speed-switch button {
+      min-width: 38px;
+      min-height: 44px;
+      padding-inline: 7px;
+    }
+  }
+}

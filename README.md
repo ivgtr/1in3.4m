@@ -2,6 +2,8 @@
 
 偶然の境遇から生まれた会社を見守り、必要な局面で判断するブラウザゲーム。採用、取引、資金繰り、事件、世代交代が積み重なり、一社の歴史になります。
 
+売上や資産の最大化だけを成功条件にせず、選択と出来事のつながりから会社ごとの経歴が生まれる体験を重視します。結果の説明は記録された出来事に基づき、実行していない別の選択の結果を断定しません。
+
 ## 遊びの流れ
 
 - 月単位で自動進行。重要な相談では停止し、自分で判断できます。
@@ -32,37 +34,44 @@ React + Vite + TanStack Routerの静的SPAです。Routerはゲーム・全日�
 | --- | --- |
 | `src/main.jsx` / `src/App.jsx` | TanStack RouterとReactの画面構成 |
 | `src/pages/` | ゲーム・全日誌・遊び方の遅延読み込み対象 |
-| `src/game/GameProvider.jsx` | 保存・進行・見守り方のReact状態 |
-| `src/game/session.js` | 現行セーブの読み込みと選択結果 |
+| `src/game/` | 起動、共有状態、保存、操作、時間進行の制御 |
 | `src/components/` | 相談、会社、人物、日誌、出典と共通UI |
 | `src/tokens.css` / `src/global.css` | デザイントークンと全体の基本スタイル |
 | `src/App.module.css` / `src/components/*.module.css` | 画面・部品単位のCSS Modules |
 | `src/domain/` | 会計、決定的乱数、人物・契約・事件・世代交代、出典 |
 | `public/assets/` | 専用生成した事務所画像 |
-| `tests/` | 既存モデル検算と最小限のReact操作確認 |
+| `tests/` / `tests/browser/` | モデル・React操作・容量検査と、配信物のブラウザ操作確認 |
+| `scripts/build.mjs` / `scripts/bundle-budget.mjs` | 配信物の生成と利用場面別のJavaScript容量検査 |
 | `scripts/validate-*.mjs` | 採用・事件・長期世代交代の追加検算 |
-| `docs/development-history.md` | 過去の要件・改修履歴（旧仕様を含む） |
 | `dist/` | `npm run build`で生成する配信物（Git管理外） |
-
-旧版のDOM文字列UI・legacy配信物・未使用の旧集計データは削除しました。旧版ソースはGit履歴に残っています。モデルの計算・確率・乱数は今回のUI移行で変更していません。
 
 ### スタイル
 
 Vite標準のCSS Modulesでクラス名をファイル単位にスコープ化しています。アプリとゲーム画面のレイアウトは `App.module.css`、部品固有のスタイルとメディアクエリは対応する `*.module.css` に置きます。共通のボタン・補助文・セクション等は `components/shared.module.css` をJSXからimportして使い、同じ定義を複製しません。親側のレイアウト調整には親のローカルクラスを追加し、子部品には必要に応じてclassNameで渡します。CSS間の `@value` 参照は使いません。
 
-全体の基本設定は `global.css`、色・余白などの変数は `tokens.css` に残します。カスケードレイヤーは `base` → `shared` → `components` の順に優先します。`main.jsx` ではレイヤーの順序を定義する `global.css` を最初にimportしてください。動的な進捗・グラフ幅はJSXのstyleで渡します。
+全体の基本設定は `global.css`、色・余白などの変数は `tokens.css` に残します。カスケードレイヤーは `base` → `shared` → `components` の順に優先します。順序は `index.html` のstyleで、Viteが挿入する共通CSSより先に確定します。JavaScriptのimport順だけでは、分割後のCSS読み込み順を保証できません。動的な進捗・グラフ幅はJSXのstyleで渡します。
 
 ### コード分割
 
-画面はTanStack Routerの `lazyRouteComponent`、会社メニューはReactの `lazy` で必要時に読み込みます。共通部品のチャンク化はViteに任せ、サイズ警告の閾値は変更しません。画面の読み込み中と会社メニュー表示中はシミュレーションを停止します。
+起動時は保存文字列と設定だけを読みます。保存のない開始画面・遊び方では計算モデルを読み込まず、「始める」「保存した会社」の操作、または既存セーブがある場合に `GameRuntime` を起動します。起動後は同じ `GameProvider` が画面遷移をまたいで会社・時計・保存を所有します。セーブがある状態で遊び方を直接開く場合も、会社を復元します。
 
-メニューの読み込み失敗はError Boundaryで隔離して共通通知へ送り、保存を変えず会社へ戻れます。画面の読み込み失敗はRouterのエラー画面に表示します。通信状態を確認したうえで、利用者が再読み込みできます。自動再試行はしません。
+Routerの画面に加え、創業条件・日誌・振り返り・相談と結果・会社メニュー・人物・歴代経営者・解説を必要時に読み込みます。ボタン・ダイアログ等は個別のモジュールを参照し、軽量な部品からモデルや重い画面を一括importしません。共通チャンクの配置はViteに任せ、サイズ警告の閾値は変更しません。
+
+`GameViewBoundary` は必要な画面の読み込み中に時計を停止し、複数の読み込みが重なった場合もすべて完了するまで自動進行を再開しません。表示失敗はError Boundaryで隔離し、共通通知で進行を停止します。メニューは閉じて会社へ戻れます。ゲーム自体の起動・保存読み取り失敗は専用エラー画面、Routerの読み込み失敗はRouterのエラー画面で知らせます。通信状態を確認したうえで利用者が再読み込みできます。空の会社への置き換えや自動再試行はしません。
+
+`npm run build` は開始画面・遊び方・創業条件・会社の再開・相談ありの再開について、JavaScriptの依存先を含む合計容量（圧縮前・gzip）と不要な依存の混入を検査します。上限と対象は [scripts/bundle-budget.mjs](scripts/bundle-budget.mjs) が正本です。超過時は依存関係と必要な読み込みを確認してから上限変更を判断してください。
 
 ### 検証
 
-`npm test`はNode標準テストランナーで既存の会計・再現性・世代交代等を検算し、React操作はTesting Library + jsdomで8ケースを確認します。再開ボタンからのTab移動による停止と、保存一覧の読み取りエラーの隔離も含みます。通知の優先順位と保存失敗時の状態維持も検証します。タイマーは既存のPlaybackテストを再利用しています。
+| コマンド | 確認する内容 |
+| --- | --- |
+| `npm test` | モデルの会計・再現性、Reactの操作・保存失敗・通知、容量検査の回帰テスト |
+| `npm run build` | 配信物の生成とJavaScript容量・依存関係の検査 |
+| `npm run test:browser` | Chromiumで配信物の読み込み・通信失敗・保存復元・画面遷移・フォーカス復帰を確認 |
 
-CSS Modules移行時はChromiumで1280px・390px幅の開始画面、出会い、相談、日誌、会社メニュー、全日誌、遊び方を移行前と比較しています。ダイアログの表示範囲と横方向のはみ出しも確認しています。jsdom操作テストでは `tests/helpers/register-css.mjs` がクラス参照を提供し、CSSの描画は検証しません。実機のタッチ操作と他ブラウザでの描画は未確認です。
+ブラウザ検証にはビルド済みの `dist/` とChromiumが必要です。初回は `npx playwright install chromium --only-shell` を実行してください。テストは4180番で専用previewサーバーを起動し、失敗時のtraceとスクリーンショットを `test-results/` に残します。CIでも上記3コマンドを実行します。
+
+Reactの操作テストはTesting Library + jsdomを使い、CSSの描画は検証しません。描画・スクロール・フォーカス移動の変更は実ブラウザで確認してください。自動ブラウザ検証の対象はChromiumです。
 
 追加の統計モデル検算は `node scripts/validate-generations.mjs` などで実行できます。出力先は `validation/` で、アプリの設定やビルド成果物を変更しません。
 
@@ -88,14 +97,14 @@ CSS Modules移行時はChromiumで1280px・390px幅の開始画面、出会い�
 
 実際の統計、期間換算などの推計、ゲーム設計上の仮定を区別しています。会社の寿命や選択の効果を実証した予測モデルではありません。名称の分母は、特定の会社の生成確率や希少性を意味しません。
 
+採用した統計の出典・母集団・調査時点・適用限界は [src/domain/evidence.js](src/domain/evidence.js) と [src/domain/insights.js](src/domain/insights.js)、モデル設定のメタデータは [src/domain/model-data.json](src/domain/model-data.json) に保持しています。数値や定義を変更するときはこれらとゲーム内の説明を更新し、文書に別の一覧を複製しません。
+
 ## リスペクト・素材
 
 [80億分の1 / 1 in 8 Billion](https://1in8b.life/ja/)へのリスペクトから制作しました。統計に基づく境遇から時間が流れ、必要な場面に介入する体験と命名構造を参考にしています。公式作品・提携作品ではありません。
 
-`public/assets/studio.png` は、このプロジェクト向けの生成画像です。生成時のプロンプトは開発履歴に残しています。統計の原資料の権利は各提供元に帰属します。
+`public/assets/studio.png` は、このプロジェクト向けにAIで生成した事務所画像です。統計の原資料の権利は各提供元に帰属します。
 
 ## 公開
 
-`npm run build`で生成される `dist/` の中身を静的ホスティングで公開できます。GitHub Actionsはテストとビルドのみで、自動デプロイはしません。[移行元の公開サイト](https://company-life-oct17.ivgtr.chatgpt.site)は0.9.12のままで、このリポジトリの変更は自動反映されません。
-
-移行元コミット: `eef03a383ebc067a1fd1d2233321b9ec1d95095f`。Sites固有の認証情報・公開設定・利用者のセーブは含みません。
+`npm run build`で生成される `dist/` の中身を静的ホスティングで公開できます。GitHub Actionsは検証のみで、自動デプロイはしません。リポジトリへの変更は公開サイトへ自動反映されません。

@@ -9,3 +9,5 @@ coverage/
 .openai/
 dist/
 validation/
+test-results/
+playwright-report/

@@ -1,18 +1,25 @@
+import { GameViewBoundary } from '../game/GameViewBoundary.jsx';
 import { exportCompany } from '../game/export-company.js';
 import { ModeChoices } from './ModeChoices.jsx';
 import shared from './shared.module.css';
 import styles from './GameDialogs.module.css';
 import companyViewsStyles from './CompanyViews.module.css';
-import React, { useState } from 'react';
+import React, { lazy, useState } from 'react';
 import { eventContext, policyOptions } from '../domain/model.js';
-import { useGame } from '../game/GameProvider.jsx';
-import { readArchives } from '../game/session.js';
+import { useGame } from '../game/GameContext.jsx';
+import { readArchives } from '../game/session-storage.js';
 import { dateAt, displayText, money } from '../game/format.js';
-import { Button, ChoiceCard, Dialog, SpeedControls } from './ui.jsx';
-import { CompanyDetails, Generations, People } from './CompanyViews.jsx';
-import { EvidenceGuide } from './Evidence.jsx';
+import { Button } from './Button.jsx';
+import { ChoiceCard } from './ChoiceCard.jsx';
+import { Dialog } from './Dialog.jsx';
+import { SpeedControls } from './SpeedControls.jsx';
+import { CompanyDetails } from './CompanyDetails.jsx';
 import { Notification } from './Notification.jsx';
 import { ErrorBoundary } from './ErrorBoundary.jsx';
+
+const Generations = lazy(() => import('./Generations.jsx').then(module => ({ default: module.Generations })));
+const People = lazy(() => import('./People.jsx').then(module => ({ default: module.People })));
+const EvidenceGuide = lazy(() => import('./EvidenceGuide.jsx').then(module => ({ default: module.EvidenceGuide })));
 
 function Policies({ state, onPolicy }) {
   const [selected, setSelected] = useState(null);
@@ -55,9 +62,9 @@ export function GameDialogs({ onNavigate }) {
   return <>{dialogs.map((dialog, index) => <Dialog key={`${index}-${dialog.kind}`} title={titles[dialog.kind]} size={['company', 'people', 'generations', 'evidence', 'event'].includes(dialog.kind) ? 'wide' : 'medium'} onClose={actions.dismiss} headerActions={index > 0 ? <span className={shared['note']}>閉じると前の画面へ戻ります</span> : null}>
     {index === dialogs.length - 1 && <Notification />}
     {dialog.kind === 'company' && <CompanyDetails state={state} onAction={onAction} onHelp={id => returnToGame(() => actions.help(id))} />}
-    {dialog.kind === 'people' && <People state={state} onEvent={id => actions.open('event', { id })} onContact={id => returnToGame(() => actions.contact(id))} />}
-    {dialog.kind === 'generations' && <Generations state={state} />}
-    {dialog.kind === 'evidence' && <EvidenceGuide />}
+    {dialog.kind === 'people' && <GameViewBoundary label="人と取引"><People state={state} onEvent={id => actions.open('event', { id })} onContact={id => returnToGame(() => actions.contact(id))} /></GameViewBoundary>}
+    {dialog.kind === 'generations' && <GameViewBoundary label="歴代経営者と業績"><Generations state={state} /></GameViewBoundary>}
+    {dialog.kind === 'evidence' && <GameViewBoundary label="データと遊び方"><EvidenceGuide /></GameViewBoundary>}
     {dialog.kind === 'settings' && <><h3>時間の速さ</h3><SpeedControls speed={preferences.speed} onChange={speed => actions.changePreferences({ speed })} /><h3>判断を任せる範囲</h3><ModeChoices preferences={preferences} onChange={actions.changePreferences} /><p>{state?.decisionHeld ? '相談を保留中です。時間は停止しています。「相談に戻る」から判断を再開できます。' : preferences.auto === 'manual' ? '選ぶまで時間は停止します。確認付きの判断は、結果を読んで「続ける」で再開します。' : '選択予定を予告してから返答します。相談に触れると一時停止し、自分で決められます。'}</p><p className={shared['note']}>「重要判断は確認」は資金相談・借入・資金危機・廃業・売却・合併で停止します。「すべておまかせ」は会社の終了も選び得ます。実行できる選択肢から均等に抽選し、最適解は探しません。</p></>}
     {dialog.kind === 'policies' && <Policies state={state} onPolicy={id => returnToGame(() => actions.policy(id))} />}
     {dialog.kind === 'family' && <FamilyForm onSave={name => returnToGame(() => actions.family(name))} />}

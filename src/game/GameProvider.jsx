@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import config from '../domain/model-data.json';
 import { createEncounter } from '../domain/encounter.js';
 import { Playback, displayDelay } from '../domain/playback.js';
@@ -6,29 +6,36 @@ import {
   autoCanChoose, cancelHelp, contactCandidate, continueLife, evolveCompany, prepareTimeline,
   registerFamily, requestExit, requestHelp, requestLeadership, requestStrategy, setPolicy, startLife, tickMonth,
 } from '../domain/model.js';
-import { archiveCompany, choose, PREFS_KEY, readArchives, readCompany, readPreferences, SAVE_KEY } from './session.js';
+import { choose, readCompany } from './session.js';
+import { archiveCompany, PREFS_KEY, readArchives, readPreferences, readStartup, SAVE_KEY } from './session-storage.js';
+import { GameContext } from './GameContext.jsx';
 
-const GameContext = createContext(null);
 const randomSeed = () => crypto.getRandomValues(new Uint32Array(1))[0];
 const autoReady = (state, mode) => autoCanChoose(state, mode) && !state.pending.initiated;
 
-function readSession() {
+function readSession(startup, intent) {
   try {
-    const raw = localStorage.getItem(SAVE_KEY);
-    return { state: raw === null ? null : readCompany(raw), preferences: readPreferences(localStorage.getItem(PREFS_KEY)), error: null };
+    const snapshot = startup ?? readStartup(localStorage);
+    return {
+      state: snapshot.rawCompany === null ? null : readCompany(snapshot.rawCompany),
+      preferences: snapshot.preferences,
+      draft: intent === 'encounter' ? createEncounter(randomSeed(), null, config) : null,
+      dialogs: intent === 'archives' ? [{ kind: 'archives' }] : [],
+      error: null,
+    };
   } catch (error) {
     return { error: `保存データを読み込めません。${error.message}` };
   }
 }
 
-export function GameProvider({ children }) {
-  const [initial] = useState(readSession);
+export function GameProvider({ children, startup, intent = 'resume' }) {
+  const [initial] = useState(() => readSession(startup, intent));
   const [state, setState] = useState(initial.state);
   const [preferences, setPreferences] = useState(initial.preferences);
   const [notification, setNotification] = useState(null);
   const error = notification?.kind === 'error';
-  const [draft, setDraft] = useState(null);
-  const [dialogs, setDialogs] = useState([]);
+  const [draft, setDraft] = useState(initial.draft);
+  const [dialogs, setDialogs] = useState(initial.dialogs ?? []);
   const [reading, setReading] = useState(false);
   const [routePaused, setRoutePaused] = useState(false);
   const [, refreshClock] = useState(0);
@@ -235,10 +242,4 @@ export function GameProvider({ children }) {
   };
 
   return <GameContext.Provider value={{ state, draft, preferences, initialError: initial.error, notification, reading, dialogs, actions, clock, autoReady: state && preferences ? autoReady(state, preferences.auto) : false }}>{children}</GameContext.Provider>;
-}
-
-export function useGame() {
-  const game = useContext(GameContext);
-  if (!game) throw new Error('GameProvider が必要です。');
-  return game;
 }

@@ -1,10 +1,6 @@
-import styles from './ui.module.css';
-import shared from './shared.module.css';
 import React, { useEffect, useId, useRef } from 'react';
-
-export function Button({ variant = 'secondary', className = '', children, type = 'button', ...props }) {
-  return <button type={type} className={`${shared['button']} ${variant === 'secondary' ? '' : shared[variant]} ${className}`.trim()} {...props}>{children}</button>;
-}
+import styles from './Dialog.module.css';
+import { Button } from './Button.jsx';
 
 export function Dialog({ open = true, title, subtitle, children, footer, onClose, size = 'medium', dismissible = true, onInteract, headerActions }) {
   const dialogRef = useRef(null);
@@ -70,33 +66,4 @@ export function Dialog({ open = true, title, subtitle, children, footer, onClose
       </div>
     </dialog>
   );
-}
-
-export function Section({ title, children, className = '' }) {
-  const titleId = useId();
-  return <section className={`${shared['detail-section']} ${className}`.trim()} aria-labelledby={title ? titleId : undefined}>
-    {title && <h3 id={titleId}>{title}</h3>}
-    {children}
-  </section>;
-}
-
-export function ChoiceCard({ title, description, cost, selected = false, disabled = false, immediate = false, onChoose, children }) {
-  return <article className={`${styles['choice-card']} ${selected ? styles['selected'] : ''} ${immediate ? styles['immediate'] : ''} ${disabled ? styles['unavailable'] : ''}`}>
-    <button type="button" className={`${shared['button']} ${styles['choice-main']}`} aria-pressed={immediate ? undefined : selected} disabled={disabled} onClick={onChoose}>
-      <span className={styles['choice-heading']}>
-        <span className={styles['choice-mark']} aria-hidden="true">{immediate ? '↗' : selected ? '●' : '○'}</span>
-        <strong>{title}</strong>
-      </span>
-      {cost != null && <span className={styles['choice-cost']}>{cost}</span>}
-      {description && <span className={styles['choice-description']}>{description}</span>}
-      {immediate && <span className={styles['choice-mode']}>すぐに返答する <span aria-hidden="true">→</span></span>}
-    </button>
-    {children && <div className={styles['choice-detail']}>{children}</div>}
-  </article>;
-}
-
-export function SpeedControls({ speed, onChange }) {
-  return <div className={styles['speed-switch']} role="group" aria-label="時間の速さ">
-    {[0.125, 0.25, 0.5, 1, 2].map(value => <Button key={value} aria-pressed={speed === value} aria-label={`時間の速さ ${value / 0.25}倍`} onClick={() => onChange(value)} data-keep-playing>{value / 0.25}×</Button>)}
-  </div>;
 }

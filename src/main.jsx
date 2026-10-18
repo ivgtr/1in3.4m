@@ -1,14 +1,13 @@
 import './global.css';
-import { Button } from './components/ui.jsx';
+import { Button } from './components/Button.jsx';
 import shared from './components/shared.module.css';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { lazyRouteComponent, createHashHistory, createRootRoute, createRoute, createRouter, RouterProvider } from '@tanstack/react-router';
 import { AppLayout } from './App.jsx';
-import { GameProvider } from './game/GameProvider.jsx';
 
 const rootRoute = createRootRoute({
-  component: () => <GameProvider><AppLayout /></GameProvider>,
+  component: AppLayout,
   errorComponent: ({ error }) => <main className={shared['page']}><h1>画面を開けませんでした。</h1><p role="alert">{error.message}</p><Button onClick={() => location.reload()}>再読み込み</Button></main>,
   notFoundComponent: () => <main className={shared['page']}><h1>このページはありません。</h1><a href="#/">会社へ戻る</a></main>,
 });

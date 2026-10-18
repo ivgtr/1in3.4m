@@ -1,8 +1,8 @@
 import shared from './shared.module.css';
 import styles from './Notification.module.css';
 import React from 'react';
-import { useGame } from '../game/GameProvider.jsx';
-import { Button } from './ui.jsx';
+import { useGame } from '../game/GameContext.jsx';
+import { Button } from './Button.jsx';
 
 export function Notification() {
   const { notification, actions } = useGame();

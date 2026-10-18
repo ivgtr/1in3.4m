@@ -1,29 +1,17 @@
+import { Progress } from './Progress.jsx';
 import styles from './DecisionFlow.module.css';
 import shared from './shared.module.css';
 import React, { useEffect, useMemo, useState } from 'react';
 import { availableDecisionOptions, costs, orderBudget, previewAutoChoice, receivables, staff } from '../domain/model.js';
 import { discoveryAssignments } from '../domain/daily-view.js';
 import { isLightChoice } from '../domain/interaction.js';
-import { useGame } from '../game/GameProvider.jsx';
+import { useGame } from '../game/GameContext.jsx';
 import { dateAt, displayText, money } from '../game/format.js';
-import { Button, ChoiceCard, Dialog } from './ui.jsx';
+import { Button } from './Button.jsx';
+import { ChoiceCard } from './ChoiceCard.jsx';
+import { Dialog } from './Dialog.jsx';
 import { Notification } from './Notification.jsx';
-import { Discovery } from './Evidence.jsx';
-
-export function Progress({ clock, label }) {
-  const [progress, setProgress] = useState(clock.progress);
-  const running = clock.running;
-  useEffect(() => {
-    let frame;
-    const draw = () => {
-      setProgress(clock.progress);
-      if (clock.running) frame = requestAnimationFrame(draw);
-    };
-    draw();
-    return () => cancelAnimationFrame(frame);
-  }, [clock, running, clock.generation]);
-  return <div className={styles['progress-track']} role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress * 100)}><span className={styles['progress-fill']} style={{ transform: `scaleX(${progress})` }} /></div>;
-}
+import { Discovery } from './Discovery.jsx';
 
 function DecisionContext({ state, decision }) {
   const finance = ['finance', 'crisis', 'rescue', 'exit'].includes(decision.type);
